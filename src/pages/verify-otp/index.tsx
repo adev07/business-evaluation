@@ -1,9 +1,15 @@
 import React, { useRef, ChangeEvent, MouseEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import useAuthStore from '../../store/authStore';
 
 const OtpInput: React.FC = () => {
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
     const navigate = useNavigate();
+    const location = useLocation();
+    const email = location.state?.email;
+    const { verifyOtp, isLoading, error } = useAuthStore();
+
+    console.log('Email:', email);
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>, index: number) => {
         const value = e.target.value;
@@ -14,11 +20,17 @@ const OtpInput: React.FC = () => {
         }
     };
 
-    const handleSubmit = (e: MouseEvent<HTMLButtonElement>) => {
+    const handleSubmit = async (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         const otp = inputRefs.current.map(input => input?.value).join('');
         console.log('Entered OTP:', otp);
-        navigate('/confirm-password');
+
+        try {
+            await verifyOtp({ email, otp });
+            navigate('/confirm-password', { state: { email, otp } });
+        } catch (err) {
+            console.error('OTP Verification Failed:', err);
+        }
     };
 
     return (
@@ -26,6 +38,12 @@ const OtpInput: React.FC = () => {
             <div className="flex-grow flex flex-col items-center justify-center w-full max-w-md mx-auto text-center">
                 <h1 className="text-[32px] font-medium leading-[48px]">Email Verification</h1>
                 <p className="text-[16px] font-normal leading-[24px]">Enter the OTP sent to your email address.</p>
+
+                {error && (
+                    <div className="text-red-500 text-sm mt-2">
+                        {error}
+                    </div>
+                )}
 
                 <div className="flex items-center mt-[40px] gap-4">
                     {Array.from({ length: 6 }).map((_, index) => (
@@ -41,12 +59,12 @@ const OtpInput: React.FC = () => {
                 </div>
 
                 <button
-
                     type="button"
                     onClick={handleSubmit}
                     className="w-full py-3 mt-[30px] bg-[#3B37FF] text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                    disabled={isLoading} // Disable button while loading
                 >
-                    Verify
+                    {isLoading ? 'Verifying...' : 'Verify'}
                 </button>
             </div>
             <div className="py-4">

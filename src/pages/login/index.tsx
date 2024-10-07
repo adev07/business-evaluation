@@ -3,26 +3,41 @@ import { useForm } from 'react-hook-form';
 import { AiOutlineEyeInvisible } from 'react-icons/ai';
 import { IoMdEye } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import useAuthStore from '../../store/authStore';
 
 const Login = () => {
   const { register, handleSubmit } = useForm();
   const [showPassword, setShowPassword] = useState(false);
-
   const navigate = useNavigate();
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+
+  const { login, isLoading, error } = useAuthStore();
+
+  const onSubmit = async (data: any) => {
+    try {
+      await login(data);
+      toast.success('Login successful!');
+      navigate("/dashboard");
+    } catch (err) {
+      toast.error(error);
+      console.error(err);
+    }
   };
 
   return (
     <div className="flex flex-col min-h-screen bg-[#FAFAFA]">
+      <ToastContainer />
       <div className="flex-grow flex flex-col items-center justify-center">
         <div className="w-full max-w-md">
           <h2 className="text-[32px] font-medium leading-[48px] text-center">Welcome Back!</h2>
           <p className="text-center text-[16px] font-normal leading-[24px]">Log in to your account</p>
 
-          {/* form starts here */}
+          {/* Display error message if there is one */}
+          {/* {error && <p className="text-red-500 text-center">{error}</p>} */}
 
+          {/* form starts here */}
           <form onSubmit={handleSubmit(onSubmit)} className="mt-[56px]">
             <div className="relative">
               <input
@@ -52,13 +67,12 @@ const Login = () => {
             <button
               type="submit"
               className="w-full mt-[30px] py-[10px] bg-[#3B37FF] text-white font-medium rounded-[10px] hover:bg-blue-700 transition-colors"
+              disabled={isLoading}
             >
-              Log in
+              {isLoading ? 'Logging in...' : 'Log in'}
             </button>
           </form>
-
           {/* form ends here */}
-
         </div>
       </div>
       <div className='py-4'>

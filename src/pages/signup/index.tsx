@@ -3,19 +3,35 @@ import { useForm } from 'react-hook-form';
 import { AiOutlineEyeInvisible } from 'react-icons/ai';
 import { IoMdEye } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import useAuthStore from '../../store/authStore';
 
 const Signup = () => {
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset } = useForm();
     const [showPassword, setShowPassword] = useState(false);
-
     const navigate = useNavigate();
 
-    const onSubmit = (data: any) => {
-        console.log(data);
+    const { signup, isLoading, error } = useAuthStore();
+
+    const onSubmit = async (data: any) => {
+        try {
+            const result = await signup(data);
+            if (result) {
+                console.log("Signup successful", result);
+                toast.success('Signup successful!');
+                reset();
+                navigate('/');
+            }
+        } catch (err) {
+            toast.error(error);
+            console.error(err);
+        }
     };
 
     return (
         <div className="flex flex-col min-h-screen bg-[#FAFAFA]">
+            <ToastContainer /> {/* Render ToastContainer here */}
             <div className="flex-grow flex flex-col items-center justify-center w-full max-w-md mx-auto text-center">
                 <h1 className="text-[32px] font-[500] leading-[48px]">Analyze. Improve. Thrive.</h1>
                 <p className="text-[16px] font-normal leading-[24px]">Sign up and discover your growth potential!</p>
@@ -52,18 +68,23 @@ const Signup = () => {
                         </span>
                     </div>
                     <div className="flex items-center mb-[30px]">
-                        <input type="checkbox" {...register('savePassword')} className="mr-2" />
+                        <input type="checkbox" className="mr-2" />
                         <label className="text-sm text-[#3B37FF]">Save Password</label>
                     </div>
                     <button
                         type="submit"
                         className="w-full py-3 bg-[#3B37FF] text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                        disabled={isLoading}
                     >
-                        Get started
+                        {isLoading ? 'Signing up...' : 'Get started'}
                     </button>
+
+                    {error && <p className="text-red-500 mt-4">{error}</p>}
+
                     <div className="mt-8">
                         <p className="text-[16px]">
-                            <span className='text-[#8F8F8F]'>Already have an account?</span> <span onClick={() => navigate("/")} className="text-[#3B37FF] hover:underline cursor-pointer">Login</span>
+                            <span className='text-[#8F8F8F]'>Already have an account?</span>
+                            <span onClick={() => navigate("/")} className="text-[#3B37FF] hover:underline cursor-pointer">Login</span>
                         </p>
                     </div>
                 </form>
