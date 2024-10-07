@@ -9,7 +9,6 @@ const OtpInput: React.FC = () => {
     const email = location.state?.email;
     const { verifyOtp, isLoading, error } = useAuthStore();
 
-    console.log('Email:', email);
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>, index: number) => {
         const value = e.target.value;
