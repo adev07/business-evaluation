@@ -48,7 +48,7 @@ function AddBusiness() {
                     <input className="bg-[#3B37FF0D]/5 px-[15px] py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] min-w-[400px] placeholder:text-[#8F8F8F] placeholder:text-[14px] focus:outline-none" placeholder="Down Payment ($)" type="text" />
                 </div>
             </div>
-            <div className="flex flex-col items-center justify-center mb-[60px]">
+            <div className="flex flex-col items-center justify-center mb-[30px]">
                 <h1 className="text-[24px] font-medium leading-[36px]">Assumptions</h1>
                 <p className="text-sm font-normal">Input your assumptions to tailor the evaluation based on your financial expectations and business goals</p>
                 <div className="mt-[30px] flex gap-5 items-center justify-center">
