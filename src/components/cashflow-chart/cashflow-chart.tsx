@@ -1,47 +1,44 @@
-
 import { TrendingUp } from "lucide-react";
 import { Area, AreaChart, CartesianGrid, XAxis, Tooltip, ResponsiveContainer, Legend, YAxis } from "recharts";
 
-const chartData = [
-    { month: "January", desktop: 186 },
-    { month: "February", desktop: 305 },
-    { month: "March", desktop: 237 },
-    { month: "April", desktop: 73 },
-    { month: "May", desktop: 209 },
-    { month: "June", desktop: 214 },
-];
+interface CashflowData {
+    year: number;
+    revenue: number;
+}
 
-export const description = "An area chart with gradient fill";
+interface CashflowChartProps {
+    data: CashflowData[];
+}
 
-export function CashflowChart() {
+export function CashflowChart({ data }: CashflowChartProps) {
     return (
         <div className="bg-white border rounded-[20px] p-6 mx-auto">
             <div className="mb-4">
-                <h2 className="text-sm text-[#3B37FF] font-semibold">Cashflow over years</h2>
+                <h2 className="text-sm text-[#3B37FF] font-semibold">Cashflow Over the Years</h2>
             </div>
             <div className="mb-6">
                 <ResponsiveContainer width="100%" height={300}>
                     <AreaChart
-                        data={chartData}
+                        data={data}
                         margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
                     >
                         <defs>
-                            <linearGradient id="colorDesktop" x1="0" y1="0" x2="0" y2="1">
+                            <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
                                 <stop offset="5%" stopColor="#60a8fa" stopOpacity={0.8} />
                                 <stop offset="95%" stopColor="#60a8fa" stopOpacity={0.1} />
                             </linearGradient>
                         </defs>
-                        <XAxis dataKey="month" />
+                        <XAxis dataKey="year" />
                         <YAxis />
                         <CartesianGrid strokeDasharray="3 3" />
                         <Tooltip />
                         <Legend />
                         <Area
                             type="monotone"
-                            dataKey="desktop"
+                            dataKey="revenue"
                             stroke="#3a37ff"
                             fillOpacity={1}
-                            fill="url(#colorDesktop)"
+                            fill="url(#colorRevenue)"
                         />
                     </AreaChart>
                 </ResponsiveContainer>
@@ -52,7 +49,7 @@ export function CashflowChart() {
                     <div className="flex items-center gap-2 font-medium">
                         Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
                     </div>
-                    <div className="text-gray-500">January - June 2024</div>
+                    <div className="text-gray-500">Year-wise Data</div>
                 </div>
             </div>
         </div>

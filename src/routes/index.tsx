@@ -9,6 +9,7 @@ const VerifyOtp = React.lazy(() => import('../pages/verify-otp'));
 const ConfirmPassword = React.lazy(() => import('../pages/confirm-password'));
 const AddBusiness = React.lazy(() => import('../pages/add-business'));
 const Dashboard = React.lazy(() => import('../pages/dashboard'));
+const CompareResults = React.lazy(() => import('../pages/compare-results'));
 
 const Router: React.FC = () => {
   return (
@@ -21,7 +22,8 @@ const Router: React.FC = () => {
           <Route path="/verify-otp" element={<VerifyOtp />} />
           <Route path="/confirm-password" element={<ConfirmPassword />} />
           <Route path="/add-business" element={<AddBusiness />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard/:id" element={<Dashboard />} />
+          <Route path="/compare-results" element={<CompareResults />} />
         </Routes>
       </Suspense>
     </BrowserRouter>

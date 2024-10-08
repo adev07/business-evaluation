@@ -45,6 +45,13 @@ const useAuthStore = create<AuthState>((set) => ({
         'http://localhost:4000/api/user/login',
         credentials
       );
+
+      const user_id = response.data.user._id;
+
+      localStorage.setItem('user_id', user_id);
+
+      console.log(user_id);
+
       set({ isLoading: false, user: response.data });
       return response.data;
     } catch (error: any) {
