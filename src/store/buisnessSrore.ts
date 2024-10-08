@@ -25,8 +25,12 @@ const useBusinessStore = create<BusinessState>((set) => ({
       const userId = localStorage.getItem('user_id');
       const businessPayload = {
         ...businessData,
-        user_id: userId,
+        // user_id: userId,
       };
+
+      if (userId) {
+        businessPayload.user_id = userId;
+      }
 
       const response = await axios.post(
         'http://localhost:4000/api/business/',
@@ -63,8 +67,6 @@ const useBusinessStore = create<BusinessState>((set) => ({
   fetchBusiness: async (businessId: string) => {
     set({ isLoading: true, error: null });
     try {
-      const userId = localStorage.getItem('user_id');
-      if (!userId) throw new Error('User ID not found in local storage');
       const response = await axios.get(
         `http://localhost:4000/api/business/${businessId}`
         // { params: { user_id: userId } }
@@ -84,7 +86,7 @@ const useBusinessStore = create<BusinessState>((set) => ({
       const userId = localStorage.getItem('user_id');
       if (!userId) throw new Error('User ID not found in local storage');
       const token = localStorage.getItem('token');
-      const config = { 
+      const config = {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -105,8 +107,8 @@ const useBusinessStore = create<BusinessState>((set) => ({
   deleteBusiness: async (businessId: string) => {
     set({ isLoading: true, error: null });
     try {
-      const token = localStorage.getItem('token');  
-      const config = { 
+      const token = localStorage.getItem('token');
+      const config = {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -123,8 +125,7 @@ const useBusinessStore = create<BusinessState>((set) => ({
       set({ isLoading: false, error: errorMessage });
       throw new Error(errorMessage);
     }
-  }
-
+  },
 }));
 
 export default useBusinessStore;

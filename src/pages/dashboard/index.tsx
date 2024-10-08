@@ -87,6 +87,7 @@ function Dashboard() {
     if (id) {
       fetchBusiness(id);
     }
+
   }, [fetchBusiness, id]);
 
   useEffect(() => {
@@ -95,11 +96,6 @@ function Dashboard() {
     }
   }, [error]);
 
-  useEffect(() => {
-    if (business) {
-      toast.success('Business data fetched successfully!');
-    }
-  }, [business]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -460,7 +456,7 @@ function Dashboard() {
             Return on Investment
           </p>
           <h3 className="text-[#ffff] text-[20px] leading-[32px] mt-1 font-bold">
-            $ {business?.business.metrics?.roi}
+            $ {business?.business?.metrics?.roi}
           </h3>
         </div>
         <div className="flex flex-col pl-[30px] py-[12px] h-full bg-[#2B3674] rounded-[15px]">
@@ -471,7 +467,7 @@ function Dashboard() {
             Debt Service Coverage Ratio
           </p>
           <h3 className="text-[#ffff] text-[20px] leading-[32px] mt-1 font-bold">
-            {business?.business.metrics?.dscr}
+            {business?.business?.metrics?.dscr}
           </h3>
         </div>
         <div className="flex flex-col pl-[30px] py-[12px] h-full bg-[#2B3674] rounded-[15px]">
