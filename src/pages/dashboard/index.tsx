@@ -14,7 +14,12 @@ import CustomModal from '../../components/modal';
 function Dashboard() {
     const { fetchBusiness, updateBusiness, business, isLoading, error } = useBusinessStore();
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [dropdownOpen, setDropdownOpen] = useState(false);
     const { id } = useParams();
+
+    const toggleDropdown = () => {
+        setDropdownOpen(!dropdownOpen);
+    };
 
     const [formData, setFormData] = useState({
         business_name: '',
@@ -129,12 +134,14 @@ function Dashboard() {
     }
 
     const handleSave = async () => {
-        // Handle save logic (e.g., API call to save data)
-        console.log('Saved data:', formData);
         await handleUpdate();
         closeModal();
     };
 
+    const handleLogout = () => {
+        localStorage.removeItem('user_id');
+        window.location.href = '/';
+    };
 
 
 
@@ -145,7 +152,17 @@ function Dashboard() {
                 <h1 className="text-[#272727] text-[24px] leading-[36px] font-medium">Business Evaluations</h1>
                 <div className='flex gap-2 items-center'>
                     <button className="bg-[#272727] text-white font-medium px-4 py-3 rounded-[10px]">Evaluate business</button>
-                    <div className='border-[2px] border-black rounded-full'><img className='p-2' src={user} alt="" /></div>
+                    <div onClick={toggleDropdown} className='border-[2px] border-black rounded-full cursor-pointer'><img className='p-2' src={user} alt="" /></div>
+                    {dropdownOpen && (
+                        <div className='absolute right-10 top-[70px] mt-2 bg-white border border-gray-200 rounded-md shadow-lg z-10'>
+                            <button
+                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left font-semibold"
+                                onClick={handleLogout}
+                            >
+                                Logout
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
             <div className='flex justify-between mx-[60px] mt-[25px]'>
@@ -173,8 +190,6 @@ function Dashboard() {
                                     name="business_name"
                                     value={formData.business_name}
                                     onChange={handleInputChange}
-
-
                                 />
                             </div>
                             <div>
@@ -407,10 +422,10 @@ function Dashboard() {
                     </div>
                 </div>
                 <div className='col-span-1'>
-                    <div>
+                    <div className='mt-3'>
                         <BarChartComponent chartData={chartData} />
                     </div>
-                    <div className='mt-10'>
+                    <div className='mt-8'>
                         <DataTable data={sensitivityAnalysis} />
                     </div>
                 </div>

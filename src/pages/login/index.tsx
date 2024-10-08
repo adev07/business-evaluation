@@ -19,7 +19,7 @@ const Login = () => {
     try {
       await login(data);
       toast.success('Login successful!');
-      navigate("/dashboard");
+      navigate("/add-business");
     } catch (err) {
       toast.error(error);
       console.error(err);

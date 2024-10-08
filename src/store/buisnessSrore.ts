@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import axios from 'axios';
 
-// Define the structure of the business state
 interface BusinessState {
   isLoading: boolean;
   error: string | null;
@@ -11,20 +10,15 @@ interface BusinessState {
   fetchBusiness: (businessId: string) => Promise<any>;
 }
 
-// Business store using Zustand
 const useBusinessStore = create<BusinessState>((set) => ({
   isLoading: false,
   error: null,
   business: null,
 
-  // Function to add a new business
   addBusiness: async (businessData) => {
     set({ isLoading: true, error: null });
     try {
-      // Retrieve the user_id from localStorage
       const userId = localStorage.getItem('user_id');
-
-      // Include user_id in the business data
       const businessPayload = {
         ...businessData,
         user_id: userId,

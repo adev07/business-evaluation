@@ -11,8 +11,8 @@ const CustomModal: React.FC<CustomModalProps> = ({ isOpen, onClose, children, on
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto ">
-            <div className="bg-white rounded-lg shadow-lg w-full max-w-[978px] mx-4">
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg shadow-lg w-full max-w-[978px] mx-4 max-h-[95vh] overflow-auto">
                 <div className="px-6 py-4 flex justify-end items-center">
                     <button
                         onClick={onClose}
@@ -33,7 +33,7 @@ const CustomModal: React.FC<CustomModalProps> = ({ isOpen, onClose, children, on
                     </button>
                     <button
                         onClick={onSave}
-                        className="px-4 py-2 text-sm bg-blue-500 hover:bg-blue-600 text-white rounded"
+                        className="px-4 py-2 text-sm bg-[#3a37ff] hover:bg-blue-600 text-white rounded"
                     >
                         Save
                     </button>
