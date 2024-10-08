@@ -61,7 +61,7 @@ const Login = () => {
                 {showPassword ? <AiOutlineEyeInvisible color='#8F8F8F' size={24} /> : <IoMdEye color='#8F8F8F' size={24} />}
               </span>
             </div>
-            <div className="text-right mt-[18px]">
+            <div className="text-right mt-[12px]">
               <span onClick={() => navigate("/reset-password")} className="text-[#3B37FF] cursor-pointer hover:underline text-sm underline">Forgot Password?</span>
             </div>
             <button
@@ -71,6 +71,11 @@ const Login = () => {
             >
               {isLoading ? 'Logging in...' : 'Log in'}
             </button>
+
+            <div className='text-center mt-3 text-[#8F8F8F] font-semibold text-sm'>
+              <p>Don't have an account? <span onClick={() => navigate("/signup")} className="text-[#3B37FF] cursor-pointer hover:underline text-sm underline">Signup</span></p>
+            </div>
+
           </form>
           {/* form ends here */}
         </div>
