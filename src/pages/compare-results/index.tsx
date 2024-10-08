@@ -3,7 +3,6 @@ import user from '../../assets/image.svg';
 import { FaTrashAlt } from 'react-icons/fa';
 import useBusinessStore from '../../store/buisnessSrore';
 import { useNavigate } from 'react-router-dom';
-import { BsEye, BsEyeFill } from 'react-icons/bs';
 
 function index() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
