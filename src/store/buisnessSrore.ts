@@ -5,15 +5,19 @@ interface BusinessState {
   isLoading: boolean;
   error: string | null;
   business: any | null;
+  allBusiness: any | null;
   addBusiness: (businessData: any) => Promise<any>;
   updateBusiness: (businessId: string, businessData: any) => Promise<any>;
   fetchBusiness: (businessId: string) => Promise<any>;
+  fetchAllBusiness: () => Promise<any>;
+  deleteBusiness: (businessId: string) => Promise<any>;
 }
 
 const useBusinessStore = create<BusinessState>((set) => ({
   isLoading: false,
   error: null,
   business: null,
+  allBusiness: null,
 
   addBusiness: async (businessData) => {
     set({ isLoading: true, error: null });
@@ -74,6 +78,53 @@ const useBusinessStore = create<BusinessState>((set) => ({
       throw new Error(errorMessage);
     }
   },
+  fetchAllBusiness: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      const userId = localStorage.getItem('user_id');
+      if (!userId) throw new Error('User ID not found in local storage');
+      const token = localStorage.getItem('token');
+      const config = { 
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const response = await axios.get(
+        `http://localhost:4000/api/business/`,
+        config
+      );
+      set({ isLoading: false, allBusiness: response.data.businesses });
+      return response.data;
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message || 'Failed to fetch business details';
+      set({ isLoading: false, error: errorMessage });
+      throw new Error(errorMessage);
+    }
+  },
+  deleteBusiness: async (businessId: string) => {
+    set({ isLoading: true, error: null });
+    try {
+      const token = localStorage.getItem('token');  
+      const config = { 
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const response = await axios.delete(
+        `http://localhost:4000/api/business/${businessId}`,
+        config
+      );
+      set({ isLoading: false });
+      return response.data;
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message || 'Failed to delete business';
+      set({ isLoading: false, error: errorMessage });
+      throw new Error(errorMessage);
+    }
+  }
+
 }));
 
 export default useBusinessStore;

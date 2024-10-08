@@ -29,6 +29,9 @@ const useAuthStore = create<AuthState>((set) => ({
         'http://localhost:4000/api/user/register',
         userData
       );
+      const user_id = response.data._id;
+      localStorage.setItem('user_id', user_id);
+      localStorage.setItem('token', response.data.token);
       set({ isLoading: false, user: response.data });
       return response.data;
     } catch (error: any) {
@@ -49,6 +52,7 @@ const useAuthStore = create<AuthState>((set) => ({
       const user_id = response.data.user._id;
 
       localStorage.setItem('user_id', user_id);
+      localStorage.setItem('token', response.data.token);
 
       console.log(user_id);
 
