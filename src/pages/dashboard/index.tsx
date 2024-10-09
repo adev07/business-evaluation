@@ -10,49 +10,18 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CustomModal from '../../components/modal';
+import { jsPDF } from 'jspdf';
+import * as XLSX from 'xlsx';
 
-interface AdvancedProjection {
-  year: number;
-  revenue: number;
-  expenses: number;
-  cash_flow: number;
-}
 
-interface SensitivityAnalysis {
-  growth_rate: number;
-  npv_low_discount: number;
-  npv_medium_discount: number;
-  npv_high_discount: number;
-}
 
-interface Business {
-  roi: number;
-  dscr: number;
-  npv: number;
-  irr: number;
-  break_even_revenue: number;
-  payback_period: number;
-  gross_profit_margin: number;
-  net_profit_margin: number;
-  equity_multiple: number;
-  sde_multiple: number;
-  cash_flow_after_purchase: number;
-  yearly_debt_payments: number;
-  sellerLoadPayment: number;
-  cash_flow_projection: number[];
-  advancedProjections: AdvancedProjection[];
-  sensitivityAnalysis: {
-    Pessimistic: SensitivityAnalysis;
-    Base: SensitivityAnalysis;
-    Optimistic: SensitivityAnalysis;
-  };
-}
 
 function Dashboard() {
   const { fetchBusiness, updateBusiness, business, isLoading, error } =
     useBusinessStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [reportFormat, setReportFormat] = useState('csv');
   const { id } = useParams();
 
   const navigate = useNavigate();
@@ -188,38 +157,31 @@ function Dashboard() {
     window.location.href = '/';
   };
 
-  const convertToCSV = (objArray: any) => {
-    const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
-    let str = '';
+  const generatePDF = (data: any) => {
+    const doc = new jsPDF();
+    doc.setFontSize(20);
+    doc.text('Business Report', 10, 10);
 
+    let y = 20;
+    Object.entries(data[0]).forEach(([key, value]) => {
+      doc.setFontSize(12);
+      doc.text(`${key}: ${value}`, 10, y);
+      y += 10; // Move down for next line
+    });
 
-    const headers = Object.keys(array[0]).join(',') + '\r\n';
-    str += headers;
-
-
-    for (let i = 0; i < array.length; i++) {
-      let line = '';
-      for (let index in array[i]) {
-        if (line !== '') line += ',';
-        line += array[i][index] ?? '';
-      }
-      str += line + '\r\n';
-    }
-    return str;
+    doc.save('business_report.pdf');
   };
 
-  const downloadCSV = (data: any, filename = 'business_report.csv') => {
-    const csvData = convertToCSV(data);
-
-    const blob = new Blob([csvData], { type: 'text/csv' });
-    const link = document.createElement('a');
-    link.href = window.URL.createObjectURL(blob);
-    link.download = filename;
-    link.click();
+  const downloadExcel = (data: unknown[], filename = 'business_report.xlsx') => {
+    const ws = XLSX.utils.json_to_sheet(data); // Convert JSON to worksheet
+    const wb = XLSX.utils.book_new(); // Create a new workbook
+    XLSX.utils.book_append_sheet(wb, ws, 'Report'); // Append the worksheet to the workbook
+    XLSX.writeFile(wb, filename); // Write the workbook to file
   };
 
   const handleGenerateReport = () => {
-    if (business.business.metrics) {
+    if (business?.business?.metrics) {
+      // Destructure the metrics object with nested objects and arrays
       const {
         roi,
         dscr,
@@ -234,14 +196,14 @@ function Dashboard() {
         cash_flow_after_purchase,
         yearly_debt_payments,
         sellerLoadPayment,
-        cash_flow_projection = [],
-        advancedProjections = [],
+        cash_flow_projection = [], // Default to empty array if undefined
+        advancedProjections = [], // Default to empty array if undefined
         sensitivityAnalysis: {
           Pessimistic = {},
           Base = {},
           Optimistic = {},
-        } = {},
-      } = business.business.metrics as Business;
+        } = {}, // Default to empty object if undefined
+      } = business.business.metrics;
 
       const reportData = [
         {
@@ -258,20 +220,26 @@ function Dashboard() {
           cash_flow_after_purchase,
           yearly_debt_payments,
           sellerLoadPayment,
-          cash_flow_projection: cash_flow_projection.join(', '),
+          cash_flow_projection: cash_flow_projection.join(', '), // Safely join the array
           advanced_projections: advancedProjections.map(
-            ({ year, revenue, expenses, cash_flow }) =>
+            ({ year, revenue, expenses, cash_flow }: { year: number; revenue: number; expenses: number; cash_flow: number }) =>
               `Year: ${year}, Revenue: ${revenue}, Expenses: ${expenses}, Cash Flow: ${cash_flow}`
-          ).join('; '),
+          ).join('; '), // Safely join the mapped array
           sensitivity_analysis_pessimistic: JSON.stringify(Pessimistic),
           sensitivity_analysis_base: JSON.stringify(Base),
           sensitivity_analysis_optimistic: JSON.stringify(Optimistic),
         },
       ];
 
-      downloadCSV(reportData);
+      // Trigger download based on selected format
+      if (reportFormat === 'csv' || reportFormat === 'excel') {
+        downloadExcel(reportData, `business_report.${reportFormat === 'excel' ? 'xlsx' : 'csv'}`);
+      } else if (reportFormat === 'pdf') {
+        generatePDF(reportData);
+      }
     }
   };
+
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] pb-6">
@@ -562,7 +530,16 @@ function Dashboard() {
               Compare Results
             </button>
           </div> */}
-          <div>
+          <div className='space-x-2'>
+            <select
+              value={reportFormat}
+              onChange={(e) => setReportFormat(e.target.value)}
+              className="mb-3 border border-[#3B37FF] rounded-[10px] px-2 py-2 text-[#3B37FF] text-sm"
+            >
+              <option value="csv">CSV</option>
+              <option value="excel">Excel</option>
+              <option value="pdf">PDF</option>
+            </select>
             <button
               className="bg-[#3B37FF] text-[#ffff] font-medium px-4 py-3 rounded-[10px] text-sm"
               onClick={handleGenerateReport}
@@ -570,7 +547,6 @@ function Dashboard() {
             >
               {isLoading ? 'Generating...' : 'Generate Report'}
             </button>
-            {/* {error && <p>Error: {error.message}</p>} */}
           </div>
         </div>
       </div>
