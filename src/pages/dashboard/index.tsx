@@ -11,6 +11,43 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CustomModal from '../../components/modal';
 
+interface AdvancedProjection {
+  year: number;
+  revenue: number;
+  expenses: number;
+  cash_flow: number;
+}
+
+interface SensitivityAnalysis {
+  growth_rate: number;
+  npv_low_discount: number;
+  npv_medium_discount: number;
+  npv_high_discount: number;
+}
+
+interface Business {
+  roi: number;
+  dscr: number;
+  npv: number;
+  irr: number;
+  break_even_revenue: number;
+  payback_period: number;
+  gross_profit_margin: number;
+  net_profit_margin: number;
+  equity_multiple: number;
+  sde_multiple: number;
+  cash_flow_after_purchase: number;
+  yearly_debt_payments: number;
+  sellerLoadPayment: number;
+  cash_flow_projection: number[];
+  advancedProjections: AdvancedProjection[];
+  sensitivityAnalysis: {
+    Pessimistic: SensitivityAnalysis;
+    Base: SensitivityAnalysis;
+    Optimistic: SensitivityAnalysis;
+  };
+}
+
 function Dashboard() {
   const { fetchBusiness, updateBusiness, business, isLoading, error } =
     useBusinessStore();
@@ -151,6 +188,91 @@ function Dashboard() {
     window.location.href = '/';
   };
 
+  const convertToCSV = (objArray: any) => {
+    const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
+    let str = '';
+
+
+    const headers = Object.keys(array[0]).join(',') + '\r\n';
+    str += headers;
+
+
+    for (let i = 0; i < array.length; i++) {
+      let line = '';
+      for (let index in array[i]) {
+        if (line !== '') line += ',';
+        line += array[i][index] ?? '';
+      }
+      str += line + '\r\n';
+    }
+    return str;
+  };
+
+  const downloadCSV = (data: any, filename = 'business_report.csv') => {
+    const csvData = convertToCSV(data);
+
+    const blob = new Blob([csvData], { type: 'text/csv' });
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+  };
+
+  const handleGenerateReport = () => {
+    if (business.business.metrics) {
+      const {
+        roi,
+        dscr,
+        npv,
+        irr,
+        break_even_revenue,
+        payback_period,
+        gross_profit_margin,
+        net_profit_margin,
+        equity_multiple,
+        sde_multiple,
+        cash_flow_after_purchase,
+        yearly_debt_payments,
+        sellerLoadPayment,
+        cash_flow_projection = [],
+        advancedProjections = [],
+        sensitivityAnalysis: {
+          Pessimistic = {},
+          Base = {},
+          Optimistic = {},
+        } = {},
+      } = business.business.metrics as Business;
+
+      const reportData = [
+        {
+          roi,
+          dscr,
+          npv,
+          irr,
+          break_even_revenue,
+          payback_period,
+          gross_profit_margin,
+          net_profit_margin,
+          equity_multiple,
+          sde_multiple,
+          cash_flow_after_purchase,
+          yearly_debt_payments,
+          sellerLoadPayment,
+          cash_flow_projection: cash_flow_projection.join(', '),
+          advanced_projections: advancedProjections.map(
+            ({ year, revenue, expenses, cash_flow }) =>
+              `Year: ${year}, Revenue: ${revenue}, Expenses: ${expenses}, Cash Flow: ${cash_flow}`
+          ).join('; '),
+          sensitivity_analysis_pessimistic: JSON.stringify(Pessimistic),
+          sensitivity_analysis_base: JSON.stringify(Base),
+          sensitivity_analysis_optimistic: JSON.stringify(Optimistic),
+        },
+      ];
+
+      downloadCSV(reportData);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#FAFAFA] pb-6">
       <ToastContainer />
@@ -159,7 +281,7 @@ function Dashboard() {
           Business Evaluations
         </h1>
         <div className="flex gap-2 items-center">
-          <button className="bg-[#272727] text-white font-medium px-4 py-3 rounded-[10px]">
+          <button onClick={() => navigate("/add-business")} className="bg-[#272727] text-white font-medium px-4 py-3 rounded-[10px]">
             Evaluate business
           </button>
           <div
@@ -430,7 +552,7 @@ function Dashboard() {
           </div>
         </CustomModal>
         <div className="flex gap-2">
-          <div>
+          {/* <div>
             <button
               onClick={() => {
                 navigate('/compare-results');
@@ -439,11 +561,16 @@ function Dashboard() {
             >
               Compare Results
             </button>
-          </div>
+          </div> */}
           <div>
-            <button className="bg-[#3B37FF] text-[#ffff] font-medium px-3 py-2 rounded-[10px] text-sm">
-              Generate Report
+            <button
+              className="bg-[#3B37FF] text-[#ffff] font-medium px-4 py-3 rounded-[10px] text-sm"
+              onClick={handleGenerateReport}
+              disabled={isLoading}
+            >
+              {isLoading ? 'Generating...' : 'Generate Report'}
             </button>
+            {/* {error && <p>Error: {error.message}</p>} */}
           </div>
         </div>
       </div>

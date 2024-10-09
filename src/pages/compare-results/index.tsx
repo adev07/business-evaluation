@@ -44,9 +44,9 @@ function index() {
           Business Evaluations
         </h1>
         <div className="flex gap-2 items-center">
-          <button className="bg-[#3B37FF] text-[#ffff] font-medium px-4 py-3 rounded-[10px]">
+          {/* <button className="bg-[#3B37FF] text-[#ffff] font-medium px-4 py-3 rounded-[10px]">
             Generate Report
-          </button>
+          </button> */}
           <button
             onClick={() => {
               navigate('/add-business');
