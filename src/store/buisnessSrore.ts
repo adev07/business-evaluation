@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import axios from 'axios';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 interface BusinessState {
   isLoading: boolean;
   error: string | null;
@@ -31,9 +33,8 @@ const useBusinessStore = create<BusinessState>((set) => ({
       if (userId) {
         businessPayload.user_id = userId;
       }
-
       const response = await axios.post(
-        'http://localhost:4000/api/business/',
+        `${API_URL}/business/`,
         businessPayload
       );
       set({ isLoading: false, business: response.data });
@@ -51,7 +52,7 @@ const useBusinessStore = create<BusinessState>((set) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await axios.put(
-        `http://localhost:4000/api/business/${businessId}`,
+        `${API_URL}/business/${businessId}`,
         businessData
       );
       set({ isLoading: false });
@@ -68,8 +69,8 @@ const useBusinessStore = create<BusinessState>((set) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await axios.get(
-        `http://localhost:4000/api/business/${businessId}`
-        // { params: { user_id: userId } }
+        `${API_URL}/business/${businessId}`
+        // { params: { user_id: userId } } // Uncomment if needed
       );
       set({ isLoading: false, business: response.data });
       return response.data;
@@ -91,10 +92,7 @@ const useBusinessStore = create<BusinessState>((set) => ({
           Authorization: `Bearer ${token}`,
         },
       };
-      const response = await axios.get(
-        `http://localhost:4000/api/business/`,
-        config
-      );
+      const response = await axios.get(`${API_URL}/business/`, config);
       set({ isLoading: false, allBusiness: response.data.businesses });
       return response.data;
     } catch (error: any) {
@@ -114,7 +112,7 @@ const useBusinessStore = create<BusinessState>((set) => ({
         },
       };
       const response = await axios.delete(
-        `http://localhost:4000/api/business/${businessId}`,
+        `${API_URL}/business/${businessId}`,
         config
       );
       set({ isLoading: false });

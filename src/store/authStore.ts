@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import axios from 'axios';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 interface AuthState {
   isLoading: boolean;
   error: string | null;
@@ -25,10 +27,7 @@ const useAuthStore = create<AuthState>((set) => ({
   signup: async (userData) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.post(
-        'http://localhost:4000/api/user/register',
-        userData
-      );
+      const response = await axios.post(`${API_URL}/user/register`, userData);
       const user_id = response.data._id;
       localStorage.setItem('user_id', user_id);
       localStorage.setItem('token', response.data.token);
@@ -44,10 +43,7 @@ const useAuthStore = create<AuthState>((set) => ({
   login: async (credentials) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.post(
-        'http://localhost:4000/api/user/login',
-        credentials
-      );
+      const response = await axios.post(`${API_URL}/user/login`, credentials);
 
       const user_id = response.data.user._id;
 
@@ -68,10 +64,9 @@ const useAuthStore = create<AuthState>((set) => ({
   forgotPassword: async (email) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.post(
-        'http://localhost:4000/api/user/forgot-password',
-        { email }
-      );
+      const response = await axios.post(`${API_URL}/user/forgot-password`, {
+        email,
+      });
       set({ isLoading: false });
       return response.data;
     } catch (error: any) {
@@ -85,10 +80,11 @@ const useAuthStore = create<AuthState>((set) => ({
   resetPassword: async ({ otp, email, password }) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.post(
-        'http://localhost:4000/api/user/reset-password',
-        { otp, email, password }
-      );
+      const response = await axios.post(`${API_URL}/user/reset-password`, {
+        otp,
+        email,
+        password,
+      });
       set({ isLoading: false });
       return response.data;
     } catch (error: any) {
@@ -102,10 +98,10 @@ const useAuthStore = create<AuthState>((set) => ({
   verifyOtp: async ({ email, otp }) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.post(
-        'http://localhost:4000/api/user/verify-otp',
-        { email, otp }
-      );
+      const response = await axios.post(`${API_URL}/user/verify-otp`, {
+        email,
+        otp,
+      });
       set({ isLoading: false, user: response.data });
       return response.data;
     } catch (error: any) {
