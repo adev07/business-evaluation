@@ -12,7 +12,7 @@ interface CashflowChartProps {
 
 export function CashflowChart({ data }: CashflowChartProps) {
     return (
-        <div className="bg-white border rounded-[20px] p-6 mx-auto">
+        <div className="bg-white border rounded-[20px] sm:p-6 p-4 sm:mx-auto mx-[20px]">
             <div className="mb-4">
                 <h2 className="text-sm text-[#3B37FF] font-semibold">Cashflow Over the Years</h2>
             </div>

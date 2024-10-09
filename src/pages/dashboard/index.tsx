@@ -154,8 +154,8 @@ function Dashboard() {
   return (
     <div className="min-h-screen bg-[#FAFAFA] pb-6">
       <ToastContainer />
-      <div className="pt-6 mx-[60px] flex justify-between items-center">
-        <h1 className="text-[#272727] text-[24px] leading-[36px] font-medium">
+      <div className="pt-6 sm:mx-[60px] mx-[30px] flex justify-between items-center">
+        <h1 className="text-[#272727] sm:text-[24px] sm:leading-[36px] font-medium">
           Business Evaluations
         </h1>
         <div className="flex gap-2 items-center">
@@ -447,7 +447,7 @@ function Dashboard() {
           </div>
         </div>
       </div>
-      <div className="mt-[22px] grid grid-cols-7 mx-[60px] gap-[8px]">
+      <div className="mt-[22px] grid sm:grid-cols-7 mx-[60px] gap-[8px]">
         <div className="flex flex-col pl-[30px] py-[12px] h-full bg-[#2B3674] rounded-[15px]">
           <h3 className="text-[16px] text-[#FFFFFF] font-semibold leading-[24px]">
             ROI
@@ -515,9 +515,9 @@ function Dashboard() {
           </h3>
         </div>
       </div>
-      <div className="grid grid-cols-2 mx-[60px] my-6 gap-6">
+      <div className="grid sm:grid-cols-2 sm:mx-[60px] my-6 gap-6">
         <div className="col-span-1">
-          <div className="p-3">
+          <div className="sm:p-3">
             <LineChartCard chartData={LineChartData} />
           </div>
           <div className="mt-4">

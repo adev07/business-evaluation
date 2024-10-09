@@ -12,7 +12,6 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-
   const { login, isLoading, error } = useAuthStore();
 
   const onSubmit = async (data: any) => {
@@ -27,32 +26,29 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#FAFAFA]">
+    <div className="flex flex-col min-h-screen bg-[#FAFAFA] px-4 sm:px-6 md:px-8">
       <ToastContainer />
       <div className="flex-grow flex flex-col items-center justify-center">
         <div className="w-full max-w-md">
-          <h2 className="text-[32px] font-medium leading-[48px] text-center">Welcome Back!</h2>
-          <p className="text-center text-[16px] font-normal leading-[24px]">Log in to your account</p>
-
-          {/* Display error message if there is one */}
-          {/* {error && <p className="text-red-500 text-center">{error}</p>} */}
+          <h2 className="text-[24px] sm:text-[28px] md:text-[32px] font-medium leading-[32px] sm:leading-[40px] md:leading-[48px] text-center">Welcome Back!</h2>
+          <p className="text-center text-[14px] sm:text-[16px] font-normal leading-[20px] sm:leading-[24px]">Log in to your account</p>
 
           {/* form starts here */}
-          <form onSubmit={handleSubmit(onSubmit)} className="mt-[56px]">
+          <form onSubmit={handleSubmit(onSubmit)} className="mt-[40px] sm:mt-[48px] md:mt-[56px]">
             <div className="relative">
               <input
                 type="email"
                 placeholder="Email"
                 {...register('email', { required: true })}
-                className="w-full px-5 py-3 border border-[#8F8F8F40]/25 rounded-[10px] focus:outline-none bg-[#8F8F8F0D]/5"
+                className="w-full px-4 sm:px-5 py-3 border border-[#8F8F8F40]/25 rounded-[8px] sm:rounded-[10px] focus:outline-none bg-[#8F8F8F0D]/5"
               />
             </div>
-            <div className="relative mt-[30px]">
+            <div className="relative mt-[24px] sm:mt-[30px]">
               <input
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Password"
                 {...register('password', { required: true })}
-                className="w-full px-5 py-3 border border-[#8F8F8F40]/25 rounded-[10px] focus:outline-none bg-[#8F8F8F0D]/5"
+                className="w-full px-4 sm:px-5 py-3 border border-[#8F8F8F40]/25 rounded-[8px] sm:rounded-[10px] focus:outline-none bg-[#8F8F8F0D]/5"
               />
               <span
                 className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
@@ -61,27 +57,26 @@ const Login = () => {
                 {showPassword ? <AiOutlineEyeInvisible color='#8F8F8F' size={24} /> : <IoMdEye color='#8F8F8F' size={24} />}
               </span>
             </div>
-            <div className="text-right mt-[12px]">
-              <span onClick={() => navigate("/reset-password")} className="text-[#3B37FF] cursor-pointer hover:underline text-sm underline">Forgot Password?</span>
+            <div className="text-right mt-[8px] sm:mt-[12px]">
+              <span onClick={() => navigate("/reset-password")} className="text-[#3B37FF] cursor-pointer hover:underline text-sm sm:text-base">Forgot Password?</span>
             </div>
             <button
               type="submit"
-              className="w-full mt-[30px] py-[10px] bg-[#3B37FF] text-white font-medium rounded-[10px] hover:bg-blue-700 transition-colors"
+              className="w-full mt-[24px] sm:mt-[30px] py-3 bg-[#3B37FF] text-white font-medium rounded-[8px] sm:rounded-[10px] hover:bg-blue-700 transition-colors"
               disabled={isLoading}
             >
               {isLoading ? 'Logging in...' : 'Log in'}
             </button>
 
             <div className='text-center mt-3 text-[#8F8F8F] font-semibold text-sm'>
-              <p>Don't have an account? <span onClick={() => navigate("/signup")} className="text-[#3B37FF] cursor-pointer hover:underline text-sm underline">Signup</span></p>
+              <p>Don't have an account? <span onClick={() => navigate("/signup")} className="text-[#3B37FF] cursor-pointer hover:underline text-sm sm:text-base">Signup</span></p>
             </div>
-
           </form>
           {/* form ends here */}
         </div>
       </div>
       <div className='py-4'>
-        <p className="text-center text-[#8F8F8F] text-sm font-medium">
+        <p className="text-center text-[#8F8F8F] text-sm sm:text-base font-medium">
           © 2024 Business Evaluation Tool
         </p>
       </div>

@@ -24,7 +24,7 @@ const DataTable: React.FC<DataTableProps> = ({ data }) => {
     ];
 
     return (
-        <div className="mx-auto bg-white rounded-[20px] border p-6">
+        <div className="bg-white rounded-[20px] border sm:p-6 p-4 sm:mx-auto mx-[20px]">
             <div className="mb-4">
                 <h2 className="text-sm text-[#3B37FF] font-semibold">Cashflow Over the Years</h2>
             </div>
