@@ -14,8 +14,6 @@ import { jsPDF } from 'jspdf';
 import * as XLSX from 'xlsx';
 
 
-
-
 function Dashboard() {
   const { fetchBusiness, updateBusiness, business, isLoading, error } =
     useBusinessStore();
@@ -166,22 +164,21 @@ function Dashboard() {
     Object.entries(data[0]).forEach(([key, value]) => {
       doc.setFontSize(12);
       doc.text(`${key}: ${value}`, 10, y);
-      y += 10; // Move down for next line
+      y += 10;
     });
 
     doc.save('business_report.pdf');
   };
 
-  const downloadExcel = (data: unknown[], filename = 'business_report.xlsx') => {
-    const ws = XLSX.utils.json_to_sheet(data); // Convert JSON to worksheet
-    const wb = XLSX.utils.book_new(); // Create a new workbook
-    XLSX.utils.book_append_sheet(wb, ws, 'Report'); // Append the worksheet to the workbook
-    XLSX.writeFile(wb, filename); // Write the workbook to file
+  const downloadExcel = (data: any, filename = 'business_report.xlsx') => {
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Report');
+    XLSX.writeFile(wb, filename);
   };
 
   const handleGenerateReport = () => {
     if (business?.business?.metrics) {
-      // Destructure the metrics object with nested objects and arrays
       const {
         roi,
         dscr,
@@ -196,14 +193,37 @@ function Dashboard() {
         cash_flow_after_purchase,
         yearly_debt_payments,
         sellerLoadPayment,
-        cash_flow_projection = [], // Default to empty array if undefined
-        advancedProjections = [], // Default to empty array if undefined
+        cash_flow_projection = [],
+        advancedProjections = [],
         sensitivityAnalysis: {
-          Pessimistic = {},
-          Base = {},
-          Optimistic = {},
-        } = {}, // Default to empty object if undefined
+          Pessimistic: {
+            growth_rate: growth_rate_pessimistic = 0,
+            npv_low_discount: npv_low_pessimistic = 0,
+            npv_medium_discount: npv_medium_pessimistic = 0,
+            npv_high_discount: npv_high_pessimistic = 0,
+          } = {},
+          Base: {
+            growth_rate: growth_rate_base = 0,
+            npv_low_discount: npv_low_base = 0,
+            npv_medium_discount: npv_medium_base = 0,
+            npv_high_discount: npv_high_base = 0,
+          } = {},
+          Optimistic: {
+            growth_rate: growth_rate_optimistic = 0,
+            npv_low_discount: npv_low_optimistic = 0,
+            npv_medium_discount: npv_medium_optimistic = 0,
+            npv_high_discount: npv_high_optimistic = 0,
+          } = {},
+        } = {},
       } = business.business.metrics;
+
+      const formattedAdvancedProjections = advancedProjections
+        .map(
+          ({ year, revenue, expenses, cash_flow }: { year: number; revenue: number; expenses: number; cash_flow: number }) =>
+            `Year ${year}:\n  Revenue: $${revenue.toFixed(2)}\n  Expenses: $${expenses.toFixed(2)}\n  Cash Flow: $${cash_flow.toFixed(2)}`
+        )
+        .join('\n\n');
+
 
       const reportData = [
         {
@@ -220,18 +240,29 @@ function Dashboard() {
           cash_flow_after_purchase,
           yearly_debt_payments,
           sellerLoadPayment,
-          cash_flow_projection: cash_flow_projection.join(', '), // Safely join the array
-          advanced_projections: advancedProjections.map(
-            ({ year, revenue, expenses, cash_flow }: { year: number; revenue: number; expenses: number; cash_flow: number }) =>
-              `Year: ${year}, Revenue: ${revenue}, Expenses: ${expenses}, Cash Flow: ${cash_flow}`
-          ).join('; '), // Safely join the mapped array
-          sensitivity_analysis_pessimistic: JSON.stringify(Pessimistic),
-          sensitivity_analysis_base: JSON.stringify(Base),
-          sensitivity_analysis_optimistic: JSON.stringify(Optimistic),
+          cash_flow_projection: cash_flow_projection.join(', '),
+          advanced_projections: formattedAdvancedProjections,
+          sensitivity_analysis_pessimistic: {
+            growth_rate: growth_rate_pessimistic,
+            npv_low_discount: npv_low_pessimistic,
+            npv_medium_discount: npv_medium_pessimistic,
+            npv_high_discount: npv_high_pessimistic,
+          },
+          sensitivity_analysis_base: {
+            growth_rate: growth_rate_base,
+            npv_low_discount: npv_low_base,
+            npv_medium_discount: npv_medium_base,
+            npv_high_discount: npv_high_base,
+          },
+          sensitivity_analysis_optimistic: {
+            growth_rate: growth_rate_optimistic,
+            npv_low_discount: npv_low_optimistic,
+            npv_medium_discount: npv_medium_optimistic,
+            npv_high_discount: npv_high_optimistic,
+          },
         },
       ];
 
-      // Trigger download based on selected format
       if (reportFormat === 'csv' || reportFormat === 'excel') {
         downloadExcel(reportData, `business_report.${reportFormat === 'excel' ? 'xlsx' : 'csv'}`);
       } else if (reportFormat === 'pdf') {
