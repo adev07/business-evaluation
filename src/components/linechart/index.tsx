@@ -1,4 +1,4 @@
-import { TrendingUp } from "lucide-react";
+// import { TrendingUp } from "lucide-react";
 import { LineChart, Line, CartesianGrid, XAxis, Tooltip, ResponsiveContainer, YAxis, Legend } from "recharts";
 
 interface ChartData {
@@ -40,12 +40,12 @@ export function LineChartCard({ chartData }: { chartData: ChartData[] }) {
                 </ResponsiveContainer>
             </div>
 
-            <div className="flex flex-col items-start gap-2 text-sm text-gray-700">
+            {/* <div className="flex flex-col items-start gap-2 text-sm text-gray-700">
                 <div className="flex items-center gap-2 font-medium">
                     Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
                 </div>
                 <div className="text-gray-500">Showing cash flow for the next 5 years</div>
-            </div>
+            </div> */}
         </div>
     );
 }

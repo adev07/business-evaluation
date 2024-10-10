@@ -1,4 +1,4 @@
-import { TrendingUp } from "lucide-react";
+// import { TrendingUp } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, Tooltip, ResponsiveContainer, Legend, YAxis } from "recharts";
 
 interface BarChartComponentProps {
@@ -24,14 +24,14 @@ export function BarChartComponent({ chartData }: BarChartComponentProps) {
                 </ResponsiveContainer>
             </div>
 
-            <div className="flex items-start gap-2 text-sm text-gray-700">
+            {/* <div className="flex items-start gap-2 text-sm text-gray-700">
                 <div className="grid gap-2">
                     <div className="flex items-center gap-2 font-medium">
                         Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
                     </div>
                     <div className="text-gray-500">Year-wise Data</div>
                 </div>
-            </div>
+            </div> */}
         </div>
     );
 }
