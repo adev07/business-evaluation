@@ -550,27 +550,18 @@ function Dashboard() {
             </div>
           </div>
         </CustomModal>
-        <div className="flex gap-2">
-          {/* <div>
+        <div className="flex gap-2 items-center">
+          <div>
             <button
               onClick={() => {
                 navigate('/compare-results');
               }}
-              className="text-[#3B37FF] font-medium px-2 py-2 rounded-[10px] border-[#3B37FF] border text-sm"
+              className="text-[#3B37FF] font-medium px-2 py-[10px] rounded-[10px] border-[#3B37FF] border text-sm"
             >
               Compare Results
             </button>
-          </div> */}
-          <div className='space-x-2'>
-            <select
-              value={reportFormat}
-              onChange={(e) => setReportFormat(e.target.value)}
-              className="mb-3 border border-[#3B37FF] rounded-[10px] px-2 py-2 text-[#3B37FF] text-sm"
-            >
-              <option value="csv">CSV</option>
-              <option value="excel">Excel</option>
-              <option value="pdf">PDF</option>
-            </select>
+          </div>
+          <div className='space-x-2 flex items-center'>
             <button
               className="bg-[#3B37FF] text-[#ffff] font-medium px-4 py-3 rounded-[10px] text-sm"
               onClick={handleGenerateReport}
@@ -578,6 +569,15 @@ function Dashboard() {
             >
               {isLoading ? 'Generating...' : 'Generate Report'}
             </button>
+            <select
+              value={reportFormat}
+              onChange={(e) => setReportFormat(e.target.value)}
+              className="mb-3 mt-3 border border-[#3B37FF] rounded-[10px] px-2 py-2 text-[#3B37FF] text-sm"
+            >
+              <option value="csv">CSV</option>
+              <option value="excel">Excel</option>
+              <option value="pdf">PDF</option>
+            </select>
           </div>
         </div>
       </div>

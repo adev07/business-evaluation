@@ -31,7 +31,7 @@ const Signup = () => {
 
     return (
         <div className="flex flex-col min-h-screen bg-[#FAFAFA]">
-            <ToastContainer /> {/* Render ToastContainer here */}
+            <ToastContainer />
             <div className="flex-grow flex flex-col items-center justify-center w-full max-w-md mx-auto text-center">
                 <h1 className="text-[32px] font-[500] leading-[48px]">Analyze. Improve. Thrive.</h1>
                 <p className="text-[16px] font-normal leading-[24px]">Sign up and discover your growth potential!</p>
