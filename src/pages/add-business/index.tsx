@@ -12,9 +12,11 @@ function AddBusiness() {
     business_cash_flow: '',
     business_notes: '',
     loan_sba_amount: '',
+    loan_sba_amount_type: '$',
     loan_sba_rate: '',
     loan_sba_term: '',
     loan_seller_amount: '',
+    loan_seller_amount_type: '$',
     loan_seller_rate: '',
     loan_seller_term: '',
     loan_down_payment: '',
@@ -33,11 +35,18 @@ function AddBusiness() {
   const handleInputChange = (e: { target: { name: any; value: any } }) => {
     const { name, value } = e.target;
 
-    if (name.includes('business') || name.includes('loan') || name === 'desired_owner_salary' || name === 'additional_startup_capital' || name === 'additional_capital_expenses') {
+    if (
+      name.includes('business') ||
+      name.includes('loan') ||
+      name === 'desired_owner_salary' ||
+      name === 'additional_startup_capital' ||
+      name === 'additional_capital_expenses'
+    ) {
       const rawValue = value.replace(/,/g, '');
-      const formattedValue = !isNaN(Number(rawValue)) && rawValue !== ''
-        ? new Intl.NumberFormat().format(Number(rawValue))
-        : value;
+      const formattedValue =
+        !isNaN(Number(rawValue)) && rawValue !== ''
+          ? new Intl.NumberFormat().format(Number(rawValue))
+          : value;
 
       setBusinessData((prevData) => ({
         ...prevData,
@@ -64,12 +73,32 @@ function AddBusiness() {
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     try {
-      const cleanedBusinessData = removeCommas(businessData);
-      const res = await addBusiness(cleanedBusinessData);
+      let clean_business_data = removeCommas(businessData);
+      console.log(clean_business_data);
+      if (clean_business_data.loan_seller_amount_type === '2') {
+        let loan_seller_amount_in_percentage =
+          clean_business_data.loan_seller_amount / 100;
+        clean_business_data.loan_seller_amount =
+          Number(loan_seller_amount_in_percentage) *
+          Number(clean_business_data.business_listing_price);
+      }
+      if (clean_business_data.loan_sba_amount_type === '2') {
+        let loan_sba_amount_in_percentage =
+          clean_business_data.loan_sba_amount / 100;
+        clean_business_data.loan_sba_amount =
+          Number(loan_sba_amount_in_percentage) *
+          Number(clean_business_data.business_listing_price);
+      }
+
+      delete clean_business_data.loan_seller_amount_type;
+      delete clean_business_data.loan_sba_amount_type;
+
+      const res = await addBusiness(clean_business_data);
       toast.success('Business added successfully!');
       navigate('/dashboard/' + res?.newBusiness._id);
     } catch (error) {
-      const errorMessage = (error as any).response?.data?.message || 'Failed to add business';
+      const errorMessage =
+        (error as any).response?.data?.message || 'Failed to add business';
       toast.error(errorMessage);
     }
   };
@@ -80,23 +109,23 @@ function AddBusiness() {
         <div className="text-[#3B37FF] sm:text-[24px] text-[20px] leading-[36px] font-medium ">
           Business Evaluations
         </div>
-        {user_id && token && (
-          <button
-            onClick={() => navigate('/compare-results')}
-            className="bg-[#3B37FF] text-[#ffff] font-medium sm:px-[40px] sm:py-[11px] px-[20px] py-[8px] rounded-[10px]"
-          >
-            Dashboard
-          </button>
-        )}
-
-        {!user_id || !token ? (
-          <button
-            onClick={() => navigate('/login')}
-            className="bg-[#3B37FF] text-[#ffff] font-medium sm:px-[40px] sm:py-[11px] px-[20px] py-[8px] rounded-[10px]"
-          >
-            Login
-          </button>
-        ) : null}
+        <div className="flex items-center gap-4">
+          {user_id && token ? (
+            <button
+              onClick={() => navigate('/compare-results')}
+              className="bg-[#3B37FF] text-[#ffff] font-medium sm:px-[40px] sm:py-[11px] px-[20px] py-[8px] rounded-[10px]"
+            >
+              Dashboard
+            </button>
+          ) : (
+            <button
+              onClick={() => navigate('/login')}
+              className="bg-[#3B37FF] text-[#ffff] font-medium sm:px-[40px] sm:py-[11px] px-[20px] py-[8px] rounded-[10px]"
+            >
+              Login
+            </button>
+          )}
+        </div>
       </div>
       <div className="flex flex-col items-center justify-center mt-[60px] ">
         <h1 className="text-[24px] font-medium leading-[36px] text-center">
@@ -196,28 +225,43 @@ function AddBusiness() {
             Provide the financing details to calculate loan terms, payments, and
             overall financial projections.
           </p>
-          <div className='grid sm:grid-cols-2 grid-cols-1 gap-4 mt-[30px]'>
-            <div className="flex flex-col items-center justify-center">
+          <div className="grid sm:grid-cols-2 grid-cols-1 gap-4 mt-[30px]">
+            <div className="flex flex-col items-center justify-center sm:min-w-[400px] min-w-[360px]">
               <label className="mb-2 font-medium" htmlFor="">
                 SBA Loan Details
               </label>
-              <div className="relative mt-[22px]">
-                <label
-                  htmlFor="loan_sba_amount"
-                  className="absolute left-[18px] top-[-10px] px-1 bg-[#f5f5ff] rounded text-[#3B37FF] text-[14px] z-10"
-                >
-                  Loan Amount ($)
-                </label>
-                <input
-                  className="bg-[#3B37FF0D]/5 px-[15px] py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] sm:min-w-[400px] min-w-[360px] placeholder:text-[#8F8F8F] placeholder:text:[14px] focus:outline-none"
-                  type="text"
-                  name="loan_sba_amount"
-                  value={businessData.loan_sba_amount}
-                  onChange={handleInputChange}
-                />
+              <div className="flex items-end gap-3 w-full">
+                <div className="relative mt-[22px] grow w-full">
+                  <label
+                    htmlFor="loan_sba_amount"
+                    className="absolute left-[18px] top-[-10px] px-1 bg-[#f5f5ff] rounded text-[#3B37FF] text-[14px] z-10"
+                  >
+                    Loan Amount (
+                    {businessData.loan_sba_amount_type === '1' ? '$' : '%'})
+                  </label>
+                  <input
+                    className="bg-[#3B37FF0D]/5 px-[15px] py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] w-full placeholder:text-[#8F8F8F] placeholder:text:[14px] focus:outline-none"
+                    type="text"
+                    name="loan_sba_amount"
+                    value={businessData.loan_sba_amount}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div>
+                  <select
+                    name="loan_sba_amount_type"
+                    id="loan_sba_amount_type"
+                    value={businessData.loan_sba_amount_type}
+                    onChange={handleInputChange}
+                    className="bg-[#3B37FF0D]/5 px-[15px] py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] min-w-[50px] placeholder:text-[#8F8F8F] placeholder:text:[14px] focus:outline-none"
+                  >
+                    <option value="1">$</option>
+                    <option value="2">%</option>
+                  </select>
+                </div>
               </div>
-              <div className="flex sm:flex-row flex-col w-full gap-4 mt-[24px]">
-                <div className="relative">
+              <div className="w-full grid sm:grid-cols-2 grid-cols-1 gap-4 mt-[24px]">
+                <div className="relative w-full">
                   <label
                     htmlFor="loan_sba_rate"
                     className="absolute left-[18px] top-[-10px] px-1 bg-[#f5f5ff] rounded text-[#3B37FF] text-[14px] z-10"
@@ -225,17 +269,17 @@ function AddBusiness() {
                     Loan Rate (%)
                   </label>
                   <input
-                    className="bg-[#3B37FF0D]/5 px-[15px] py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] placeholder:text-[#8F8F8F] placeholder:text-[14px] focus:outline-none"
+                    className="w-full bg-[#3B37FF0D]/5 px-[15px] py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] placeholder:text-[#8F8F8F] placeholder:text-[14px] focus:outline-none"
                     type="text"
                     name="loan_sba_rate"
                     value={businessData.loan_sba_rate}
                     onChange={handleInputChange}
                   />
                 </div>
-                <div className="relative">
+                <div className="relative w-full">
                   <label
                     htmlFor="loan_sba_term"
-                    className="absolute left-[18px] top-[-10px] px-1 bg-[#f5f5ff] rounded text-[#3B37FF] text-[14px] z-10"
+                    className="w-fit absolute left-[18px] top-[-10px] px-1 bg-[#f5f5ff] rounded text-[#3B37FF] text-[14px] z-10"
                   >
                     Loan Term (in yrs)
                   </label>
@@ -249,27 +293,42 @@ function AddBusiness() {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col items-center justify-center">
+            <div className="flex flex-col items-center justify-center sm:min-w-[400px] min-w-[360px]">
               <label className="mb-2 font-medium" htmlFor="">
                 Seller Loan Details
               </label>
-              <div className="relative mt-[22px]">
-                <label
-                  htmlFor="loan_seller_amount"
-                  className="absolute left-[18px] top-[-10px] px-1 bg-[#f5f5ff] rounded text-[#3B37FF] text-[14px] z-10"
-                >
-                  Loan Amount ($)
-                </label>
-                <input
-                  className="bg-[#3B37FF0D]/5 px-[15px] py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] sm:min-w-[400px] min-w-[360px] placeholder:text-[#8F8F8F] placeholder:text:[14px] focus:outline-none"
-                  type="text"
-                  name="loan_seller_amount"
-                  value={businessData.loan_seller_amount}
-                  onChange={handleInputChange}
-                />
+              <div className="flex items-end gap-3 w-full">
+                <div className="relative mt-[22px] grow">
+                  <label
+                    htmlFor="loan_seller_amount"
+                    className="absolute left-[18px] top-[-10px] px-1 bg-[#f5f5ff] rounded text-[#3B37FF] text-[14px] z-10"
+                  >
+                    Loan Amount (
+                    {businessData.loan_seller_amount_type === '1' ? '$' : '%'})
+                  </label>
+                  <input
+                    className="bg-[#3B37FF0D]/5 px-[15px] w-full py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] placeholder:text-[#8F8F8F] placeholder:text:[14px] focus:outline-none"
+                    type="text"
+                    name="loan_seller_amount"
+                    value={businessData.loan_seller_amount}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="w-[80px]">
+                  <select
+                    name="loan_seller_amount_type"
+                    id="loan_seller_amount_type"
+                    value={businessData.loan_seller_amount_type}
+                    onChange={handleInputChange}
+                    className="bg-[#3B37FF0D]/5 px-[15px] py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] w-full placeholder:text-[#8F8F8F] placeholder:text:[14px] focus:outline-none"
+                  >
+                    <option value="1">$</option>
+                    <option value="2">%</option>
+                  </select>
+                </div>
               </div>
-              <div className="flex sm:flex-row flex-col w-full gap-4 mt-[24px]">
-                <div className="relative">
+              <div className="grid sm:grid-cols-2 grid-cols-1 w-full gap-4 mt-[24px]">
+                <div className="relative w-full">
                   <label
                     htmlFor="loan_seller_rate"
                     className="absolute left-[18px] top-[-10px] px-1 bg-[#f5f5ff] rounded text-[#3B37FF] text-[14px] z-10"
@@ -277,14 +336,14 @@ function AddBusiness() {
                     Loan Rate (%)
                   </label>
                   <input
-                    className="bg-[#3B37FF0D]/5 px-[15px] py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] placeholder:text-[#8F8F8F] placeholder:text-[14px] focus:outline-none"
+                    className="w-full bg-[#3B37FF0D]/5 px-[15px] py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] placeholder:text-[#8F8F8F] placeholder:text-[14px] focus:outline-none"
                     type="text"
                     name="loan_seller_rate"
                     value={businessData.loan_seller_rate}
                     onChange={handleInputChange}
                   />
                 </div>
-                <div className="relative">
+                <div className="relative w-full">
                   <label
                     htmlFor="loan_seller_term"
                     className="absolute left-[18px] top-[-10px] px-1 bg-[#f5f5ff] rounded text-[#3B37FF] text-[14px] z-10"
@@ -292,7 +351,7 @@ function AddBusiness() {
                     Loan Term (in yrs)
                   </label>
                   <input
-                    className="bg-[#3B37FF0D]/5 px-[15px] py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] placeholder:text-[#8F8F8F] placeholder:text-[14px] focus:outline-none"
+                    className="w-full bg-[#3B37FF0D]/5 px-[15px] py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] placeholder:text-[#8F8F8F] placeholder:text-[14px] focus:outline-none"
                     type="text"
                     name="loan_seller_term"
                     value={businessData.loan_seller_term}

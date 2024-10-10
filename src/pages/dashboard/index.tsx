@@ -13,7 +13,6 @@ import CustomModal from '../../components/modal';
 import { jsPDF } from 'jspdf';
 import * as XLSX from 'xlsx';
 
-
 function Dashboard() {
   const { fetchBusiness, updateBusiness, business, isLoading, error } =
     useBusinessStore();
@@ -21,6 +20,9 @@ function Dashboard() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [reportFormat, setReportFormat] = useState('csv');
   const { id } = useParams();
+
+  const user_id = localStorage.getItem('user_id');
+  const token = localStorage.getItem('token');
 
   const navigate = useNavigate();
 
@@ -91,7 +93,6 @@ function Dashboard() {
     if (id) {
       fetchBusiness(id);
     }
-
   }, [fetchBusiness, id]);
 
   useEffect(() => {
@@ -99,7 +100,6 @@ function Dashboard() {
       toast.error(`Error: ${error}`);
     }
   }, [error]);
-
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -219,11 +219,20 @@ function Dashboard() {
 
       const formattedAdvancedProjections = advancedProjections
         .map(
-          ({ year, revenue, expenses, cash_flow }: { year: number; revenue: number; expenses: number; cash_flow: number }) =>
+          ({
+            year,
+            revenue,
+            expenses,
+            cash_flow,
+          }: {
+            year: number;
+            revenue: number;
+            expenses: number;
+            cash_flow: number;
+          }) =>
             `Year ${year}:\n  Revenue: $${revenue.toFixed(2)}\n  Expenses: $${expenses.toFixed(2)}\n  Cash Flow: $${cash_flow.toFixed(2)}`
         )
         .join('\n\n');
-
 
       const reportData = [
         {
@@ -264,13 +273,15 @@ function Dashboard() {
       ];
 
       if (reportFormat === 'csv' || reportFormat === 'excel') {
-        downloadExcel(reportData, `business_report.${reportFormat === 'excel' ? 'xlsx' : 'csv'}`);
+        downloadExcel(
+          reportData,
+          `business_report.${reportFormat === 'excel' ? 'xlsx' : 'csv'}`
+        );
       } else if (reportFormat === 'pdf') {
         generatePDF(reportData);
       }
     }
   };
-
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] pb-6">
@@ -280,15 +291,21 @@ function Dashboard() {
           Business Evaluations
         </h1>
         <div className="flex gap-2 items-center">
-          <button onClick={() => navigate("/")} className="bg-[#272727] text-white font-medium px-4 py-3 rounded-[10px]">
+          <button
+            onClick={() => navigate('/')}
+            className="bg-[#272727] text-white font-medium px-4 py-3 rounded-[10px]"
+          >
             Evaluate business
           </button>
-          <div
-            onClick={toggleDropdown}
-            className="border-[2px] border-black rounded-full cursor-pointer"
-          >
-            <img className="p-2" src={user} alt="" />
-          </div>
+          {user_id && token && (
+            <div
+              onClick={toggleDropdown}
+              className="border-[2px] border-black rounded-full cursor-pointer"
+            >
+              <img className="p-2" src={user} alt="" />
+            </div>
+          )}
+
           {dropdownOpen && (
             <div className="absolute right-10 top-[70px] mt-2 bg-white border border-gray-200 rounded-md shadow-lg z-10">
               <button
@@ -551,17 +568,20 @@ function Dashboard() {
           </div>
         </CustomModal>
         <div className="flex gap-2 items-center">
-          <div>
-            <button
-              onClick={() => {
-                navigate('/compare-results');
-              }}
-              className="text-[#3B37FF] font-medium px-2 py-[10px] rounded-[10px] border-[#3B37FF] border text-sm"
-            >
-              Dashboard
-            </button>
-          </div>
-          <div className='space-x-2 flex items-center'>
+          {user_id && token && (
+            <div>
+              <button
+                onClick={() => {
+                  navigate('/compare-results');
+                }}
+                className="text-[#3B37FF] font-medium px-2 py-[10px] rounded-[10px] border-[#3B37FF] border text-sm"
+              >
+                Dashboard
+              </button>
+            </div>
+          )}
+
+          <div className="space-x-2 flex items-center">
             <button
               className="bg-[#3B37FF] text-[#ffff] font-medium px-4 py-3 rounded-[10px] text-sm"
               onClick={handleGenerateReport}
@@ -583,15 +603,46 @@ function Dashboard() {
       </div>
       <div className="mt-[22px] grid sm:grid-cols-7 mx-[60px] gap-[8px]">
         {[
-          { title: "ROI", subtitle: "Return on Investment", value: `$ ${business?.business?.metrics?.roi}` },
-          { title: "DSCR", subtitle: "Debt Service Coverage Ratio", value: business?.business?.metrics?.dscr },
-          { title: "Net Profit Margins", subtitle: "Post Purchase", value: `${business?.business?.metrics?.net_profit_margin} %` },
-          { title: "Break-even Point", subtitle: "", value: `${business?.business?.metrics?.break_even_revenue}x` },
-          { title: "Payback Period", subtitle: "", value: `${business?.business?.metrics?.payback_period} years` },
-          { title: "Equity Multiple", subtitle: "", value: `${business?.business?.metrics?.equity_multiple?.toString().slice(0, 4)}x` },
-          { title: "SDE Multiple", subtitle: "", value: `${business?.business?.metrics?.sde_multiple}x` }
+          {
+            title: 'ROI',
+            subtitle: 'Return on Investment',
+            value: `$ ${business?.business?.metrics?.roi}`,
+          },
+          {
+            title: 'DSCR',
+            subtitle: 'Debt Service Coverage Ratio',
+            value: business?.business?.metrics?.dscr,
+          },
+          {
+            title: 'Net Profit Margins',
+            subtitle: 'Post Purchase',
+            value: `${business?.business?.metrics?.net_profit_margin} %`,
+          },
+          {
+            title: 'Break-even Point',
+            subtitle: '',
+            value: `${business?.business?.metrics?.break_even_revenue}x`,
+          },
+          {
+            title: 'Payback Period',
+            subtitle: '',
+            value: `${business?.business?.metrics?.payback_period} years`,
+          },
+          {
+            title: 'Equity Multiple',
+            subtitle: '',
+            value: `${business?.business?.metrics?.equity_multiple?.toString().slice(0, 4)}x`,
+          },
+          {
+            title: 'SDE Multiple',
+            subtitle: '',
+            value: `${business?.business?.metrics?.sde_multiple}x`,
+          },
         ].map((metric, idx) => (
-          <div key={idx} className="flex flex-col justify-center h-full p-[20px] bg-[#2B3674] rounded-[15px]">
+          <div
+            key={idx}
+            className="flex flex-col justify-center h-full p-[20px] bg-[#2B3674] rounded-[15px]"
+          >
             <div>
               <h3 className="text-[16px] text-[#FFFFFF] font-semibold leading-[24px]">
                 {metric.title}

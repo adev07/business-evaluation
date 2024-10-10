@@ -10,6 +10,9 @@ function Index() {
   const { fetchAllBusiness, allBusiness, deleteBusiness } = useBusinessStore();
   const navigate = useNavigate();
 
+  const user_id = localStorage.getItem('user_id');
+  const token = localStorage.getItem('token');
+
   useEffect(() => {
     fetchAllBusiness();
   }, []);
@@ -78,12 +81,14 @@ function Index() {
           >
             Evaluate Business
           </button>
-          <div
-            onClick={toggleDropdown}
-            className="border-2 border-black rounded-full cursor-pointer p-2"
-          >
-            <img className="h-8 w-8" src={user} alt="User" />
-          </div>
+          {user_id && token && (
+            <div
+              onClick={toggleDropdown}
+              className="border-[2px] border-black rounded-full cursor-pointer"
+            >
+              <img className="p-2" src={user} alt="" />
+            </div>
+          )}
           {dropdownOpen && (
             <div className="absolute right-10 top-[70px] mt-2 bg-white border border-gray-200 rounded-md shadow-lg z-10">
               <button
@@ -97,7 +102,9 @@ function Index() {
         </div>
       </div>
       <div className="mt-6 text-start">
-        <h2 className="text-[26px] text-[#2B3674] leading-[32px] font-bold">Dashboard</h2>
+        <h2 className="text-[26px] text-[#2B3674] leading-[32px] font-bold">
+          Dashboard
+        </h2>
       </div>
       <div className="mt-4 grid grid-cols-6 gap-4">
         <div className="col-span-1 border min-h-[620px] px-4 py-4 rounded-[10px] shadow">
@@ -161,16 +168,36 @@ function Index() {
               <tbody className="text-[#2B3674] text-[14px] leading-[24px] font-semibold">
                 {sortedBusiness()?.map((row: any, index: number) => (
                   <tr key={index} className="hover:bg-gray-50 transition">
-                    <td className="px-4 py-2 border border-gray-300">{row?.metrics?.roi}</td>
-                    <td className="px-4 py-2 border border-gray-300">{row?.metrics?.dscr}</td>
-                    <td className="px-4 py-2 border border-gray-300">{row?.metrics?.net_profit_margin}</td>
-                    <td className="px-4 py-2 border border-gray-300">{row?.metrics?.break_even_revenue}</td>
-                    <td className="px-4 py-2 border border-gray-300">{row?.metrics?.payback_period}</td>
-                    <td className="px-4 py-2 border border-gray-300">{row?.metrics?.equity_multiple}</td>
-                    <td className="px-4 py-2 border border-gray-300">{row?.metrics?.sde_multiple}</td>
-                    <td className="px-4 py-2 border border-gray-300">{row?.metrics?.gross_profit_margin}</td>
-                    <td className="px-4 py-2 border border-gray-300">{row?.metrics?.yearly_debt_payments}</td>
-                    <td className="px-4 py-2 border border-gray-300">{row?.metrics?.cash_flow_after_purchase}</td>
+                    <td className="px-4 py-2 border border-gray-300">
+                      {row?.metrics?.roi}
+                    </td>
+                    <td className="px-4 py-2 border border-gray-300">
+                      {row?.metrics?.dscr}
+                    </td>
+                    <td className="px-4 py-2 border border-gray-300">
+                      {row?.metrics?.net_profit_margin}
+                    </td>
+                    <td className="px-4 py-2 border border-gray-300">
+                      {row?.metrics?.break_even_revenue}
+                    </td>
+                    <td className="px-4 py-2 border border-gray-300">
+                      {row?.metrics?.payback_period}
+                    </td>
+                    <td className="px-4 py-2 border border-gray-300">
+                      {row?.metrics?.equity_multiple}
+                    </td>
+                    <td className="px-4 py-2 border border-gray-300">
+                      {row?.metrics?.sde_multiple}
+                    </td>
+                    <td className="px-4 py-2 border border-gray-300">
+                      {row?.metrics?.gross_profit_margin}
+                    </td>
+                    <td className="px-4 py-2 border border-gray-300">
+                      {row?.metrics?.yearly_debt_payments}
+                    </td>
+                    <td className="px-4 py-2 border border-gray-300">
+                      {row?.metrics?.cash_flow_after_purchase}
+                    </td>
                   </tr>
                 ))}
               </tbody>
