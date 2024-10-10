@@ -582,72 +582,31 @@ function Dashboard() {
         </div>
       </div>
       <div className="mt-[22px] grid sm:grid-cols-7 mx-[60px] gap-[8px]">
-        <div className="flex flex-col pl-[30px] py-[12px] h-full bg-[#2B3674] rounded-[15px]">
-          <h3 className="text-[16px] text-[#FFFFFF] font-semibold leading-[24px]">
-            ROI
-          </h3>
-          <p className="text-[#A3AED0] text-xs font-medium">
-            Return on Investment
-          </p>
-          <h3 className="text-[#ffff] text-[20px] leading-[32px] mt-1 font-bold">
-            $ {business?.business?.metrics?.roi}
-          </h3>
-        </div>
-        <div className="flex flex-col pl-[30px] py-[12px] h-full bg-[#2B3674] rounded-[15px]">
-          <h3 className="text-[16px] text-[#FFFFFF] font-semibold leading-[24px]">
-            DSCR
-          </h3>
-          <p className="text-[#A3AED0] text-xs font-medium">
-            Debt Service Coverage Ratio
-          </p>
-          <h3 className="text-[#ffff] text-[20px] leading-[32px] mt-1 font-bold">
-            {business?.business?.metrics?.dscr}
-          </h3>
-        </div>
-        <div className="flex flex-col pl-[30px] py-[12px] h-full bg-[#2B3674] rounded-[15px]">
-          <h3 className="text-[16px] text-[#FFFFFF] font-semibold leading-[24px]">
-            Net Profit Margins
-          </h3>
-          <p className="text-[#A3AED0] text-xs font-medium">Post Purchase</p>
-          <h3 className="text-[#ffff] text-[20px] leading-[32px] mt-1 font-bold">
-            {business?.business?.metrics?.net_profit_margin} %
-          </h3>
-        </div>
-        <div className="flex flex-col justify-center items-start pl-[30px] py-[12px] bg-[#2B3674] rounded-[15px] h-full">
-          <h3 className="text-[16px] text-[#FFFFFF] font-semibold leading-[24px]">
-            Break-even Point
-          </h3>
-          <h3 className="text-[#ffff] text-[20px] leading-[32px] font-bold">
-            {business?.business?.metrics?.break_even_revenue}x
-          </h3>
-        </div>
-        <div className="flex flex-col justify-center items-start pl-[30px] py-[12px] bg-[#2B3674] rounded-[15px] h-full">
-          <h3 className="text-[16px] text-[#FFFFFF] font-semibold leading-[24px]">
-            Payback Period
-          </h3>
-          <h3 className="text-[#ffff] text-[20px] leading-[32px] font-bold">
-            {business?.business?.metrics?.payback_period} years
-          </h3>
-        </div>
-        <div className="flex flex-col justify-center items-start pl-[30px] py-[12px] bg-[#2B3674] rounded-[15px] h-full">
-          <h3 className="text-[16px] text-[#FFFFFF] font-semibold leading-[24px]">
-            Equity Multiple
-          </h3>
-          <h3 className="text-[#ffff] text-[20px] leading-[32px] font-bold">
-            {business?.business?.metrics?.equity_multiple
-              ?.toString()
-              .slice(0, 4)}
-            x
-          </h3>
-        </div>
-        <div className="flex flex-col justify-center items-start pl-[30px] py-[12px] bg-[#2B3674] rounded-[15px] h-full">
-          <h3 className="text-[16px] text-[#FFFFFF] font-semibold leading-[24px]">
-            SDE Multiple
-          </h3>
-          <h3 className="text-[#ffff] text-[20px] leading-[32px] font-bold">
-            {business?.business?.metrics?.sde_multiple}x
-          </h3>
-        </div>
+        {[
+          { title: "ROI", subtitle: "Return on Investment", value: `$ ${business?.business?.metrics?.roi}` },
+          { title: "DSCR", subtitle: "Debt Service Coverage Ratio", value: business?.business?.metrics?.dscr },
+          { title: "Net Profit Margins", subtitle: "Post Purchase", value: `${business?.business?.metrics?.net_profit_margin} %` },
+          { title: "Break-even Point", subtitle: "", value: `${business?.business?.metrics?.break_even_revenue}x` },
+          { title: "Payback Period", subtitle: "", value: `${business?.business?.metrics?.payback_period} years` },
+          { title: "Equity Multiple", subtitle: "", value: `${business?.business?.metrics?.equity_multiple?.toString().slice(0, 4)}x` },
+          { title: "SDE Multiple", subtitle: "", value: `${business?.business?.metrics?.sde_multiple}x` }
+        ].map((metric, idx) => (
+          <div key={idx} className="flex flex-col justify-center h-full p-[20px] bg-[#2B3674] rounded-[15px]">
+            <div>
+              <h3 className="text-[16px] text-[#FFFFFF] font-semibold leading-[24px]">
+                {metric.title}
+              </h3>
+              {metric.subtitle && (
+                <p className="text-[#A3AED0] text-xs font-medium">
+                  {metric.subtitle}
+                </p>
+              )}
+            </div>
+            <h3 className="text-[#FFFFFF] text-[20px] leading-[32px] font-bold">
+              {metric.value}
+            </h3>
+          </div>
+        ))}
       </div>
       <div className="grid sm:grid-cols-2 sm:mx-[60px] my-6 gap-6">
         <div className="col-span-1">
