@@ -280,7 +280,7 @@ function Dashboard() {
           Business Evaluations
         </h1>
         <div className="flex gap-2 items-center">
-          <button onClick={() => navigate("/add-business")} className="bg-[#272727] text-white font-medium px-4 py-3 rounded-[10px]">
+          <button onClick={() => navigate("/")} className="bg-[#272727] text-white font-medium px-4 py-3 rounded-[10px]">
             Evaluate business
           </button>
           <div
@@ -558,7 +558,7 @@ function Dashboard() {
               }}
               className="text-[#3B37FF] font-medium px-2 py-[10px] rounded-[10px] border-[#3B37FF] border text-sm"
             >
-              Compare Results
+              Dashboard
             </button>
           </div>
           <div className='space-x-2 flex items-center'>

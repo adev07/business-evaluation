@@ -16,12 +16,12 @@ const Router: React.FC = () => {
     <BrowserRouter>
       <Suspense fallback={<div>Loading...</div>}>
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<AddBusiness />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/verify-otp" element={<VerifyOtp />} />
           <Route path="/confirm-password" element={<ConfirmPassword />} />
-          <Route path="/add-business" element={<AddBusiness />} />
           <Route path="/dashboard/:id" element={<Dashboard />} />
           <Route path="/compare-results" element={<CompareResults />} />
         </Routes>

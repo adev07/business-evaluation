@@ -69,7 +69,8 @@ function AddBusiness() {
       toast.success('Business added successfully!');
       navigate('/dashboard/' + res?.newBusiness._id);
     } catch (error) {
-      toast.error('Failed to add business');
+      const errorMessage = (error as any).response?.data?.message || 'Failed to add business';
+      toast.error(errorMessage);
     }
   };
   return (
@@ -84,9 +85,18 @@ function AddBusiness() {
             onClick={() => navigate('/compare-results')}
             className="bg-[#3B37FF] text-[#ffff] font-medium sm:px-[40px] sm:py-[11px] px-[20px] py-[8px] rounded-[10px]"
           >
-            Skip
+            Dashboard
           </button>
         )}
+
+        {!user_id || !token ? (
+          <button
+            onClick={() => navigate('/login')}
+            className="bg-[#3B37FF] text-[#ffff] font-medium sm:px-[40px] sm:py-[11px] px-[20px] py-[8px] rounded-[10px]"
+          >
+            Login
+          </button>
+        ) : null}
       </div>
       <div className="flex flex-col items-center justify-center mt-[60px] ">
         <h1 className="text-[24px] font-medium leading-[36px] text-center">
@@ -107,7 +117,6 @@ function AddBusiness() {
             <input
               id="business_name"
               className="bg-[#3B37FF0D]/5 px-[15px] py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] sm:min-w-[400px] min-w-[360px] placeholder:text-[#8F8F8F] placeholder:text-[14px] focus:outline-none"
-              placeholder="Business Name"
               type="text"
               name="business_name"
               value={businessData.business_name}
@@ -126,7 +135,6 @@ function AddBusiness() {
               value={businessData.business_listing_price}
               onChange={handleInputChange}
               className="bg-[#3B37FF0D]/5 px-[15px] py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] sm:min-w-[400px] min-w-[360px] placeholder:text-[#8F8F8F] placeholder:text-[14px] focus:outline-none"
-              placeholder="The Listing Price ($)"
               type="text"
             />
           </div>
@@ -141,7 +149,6 @@ function AddBusiness() {
             </label>
             <input
               className="bg-[#3B37FF0D]/5 px-[15px] py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] sm:min-w-[400px] min-w-[360px] placeholder:text-[#8F8F8F] placeholder:text-[14px] focus:outline-none"
-              placeholder="Gross Revenue ($)"
               type="text"
               name="business_gross_revenue"
               value={businessData.business_gross_revenue}
@@ -160,7 +167,6 @@ function AddBusiness() {
               value={businessData.business_cash_flow}
               onChange={handleInputChange}
               className="bg-[#3B37FF0D]/5 px-[15px] py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] sm:min-w-[400px] min-w-[360px] placeholder:text-[#8F8F8F] placeholder:text-[14px] focus:outline-none"
-              placeholder="Cash Flow / SDE ($)"
               type="text"
             />
           </div>
@@ -174,10 +180,10 @@ function AddBusiness() {
           </label>
           <textarea
             className="bg-[#3B37FF0D]/5 px-[15px] py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] min-w-[360px] sm:min-w-[450px] placeholder:text-[#8F8F8F] placeholder:text-[14px] focus:outline-none"
-            placeholder="Add any links or notes for future reference..."
             name="business_notes"
             value={businessData.business_notes}
             onChange={handleInputChange}
+            required
           />
         </div>
       </div>
@@ -204,7 +210,6 @@ function AddBusiness() {
                 </label>
                 <input
                   className="bg-[#3B37FF0D]/5 px-[15px] py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] sm:min-w-[400px] min-w-[360px] placeholder:text-[#8F8F8F] placeholder:text:[14px] focus:outline-none"
-                  placeholder="Loan Amount ($)"
                   type="text"
                   name="loan_sba_amount"
                   value={businessData.loan_sba_amount}
@@ -221,7 +226,6 @@ function AddBusiness() {
                   </label>
                   <input
                     className="bg-[#3B37FF0D]/5 px-[15px] py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] placeholder:text-[#8F8F8F] placeholder:text-[14px] focus:outline-none"
-                    placeholder="Loan Rate (%)"
                     type="text"
                     name="loan_sba_rate"
                     value={businessData.loan_sba_rate}
@@ -237,7 +241,6 @@ function AddBusiness() {
                   </label>
                   <input
                     className="bg-[#3B37FF0D]/5 px-[15px] py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] placeholder:text-[#8F8F8F] placeholder:text-[14px] focus:outline-none"
-                    placeholder="Loan Term (in yrs)"
                     type="text"
                     name="loan_sba_term"
                     value={businessData.loan_sba_term}
@@ -259,7 +262,6 @@ function AddBusiness() {
                 </label>
                 <input
                   className="bg-[#3B37FF0D]/5 px-[15px] py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] sm:min-w-[400px] min-w-[360px] placeholder:text-[#8F8F8F] placeholder:text:[14px] focus:outline-none"
-                  placeholder="Loan Amount ($)"
                   type="text"
                   name="loan_seller_amount"
                   value={businessData.loan_seller_amount}
@@ -276,7 +278,6 @@ function AddBusiness() {
                   </label>
                   <input
                     className="bg-[#3B37FF0D]/5 px-[15px] py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] placeholder:text-[#8F8F8F] placeholder:text-[14px] focus:outline-none"
-                    placeholder="Loan Rate (%)"
                     type="text"
                     name="loan_seller_rate"
                     value={businessData.loan_seller_rate}
@@ -292,7 +293,6 @@ function AddBusiness() {
                   </label>
                   <input
                     className="bg-[#3B37FF0D]/5 px-[15px] py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] placeholder:text-[#8F8F8F] placeholder:text-[14px] focus:outline-none"
-                    placeholder="Loan Term (in yrs)"
                     type="text"
                     name="loan_seller_term"
                     value={businessData.loan_seller_term}
@@ -313,7 +313,6 @@ function AddBusiness() {
             </label>
             <input
               className="bg-[#3B37FF0D]/5 px-[15px] py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] sm:min-w-[400px] min-w-[360px] placeholder:text-[#8F8F8F] placeholder:text-[14px] focus:outline-none"
-              placeholder="Down Payment ($)"
               type="text"
               name="loan_down_payment"
               value={businessData.loan_down_payment}
@@ -338,7 +337,6 @@ function AddBusiness() {
             </label>
             <input
               className="bg-[#3B37FF0D]/5 px-[15px] py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] sm:min-w-[400px] min-w-[360px] placeholder:text-[#8F8F8F] placeholder:text-[14px] focus:outline-none"
-              placeholder="Desired Owner Salary ($)"
               type="text"
               name="desired_owner_salary"
               value={businessData.desired_owner_salary}
@@ -354,7 +352,6 @@ function AddBusiness() {
             </label>
             <input
               className="bg-[#3B37FF0D]/5 px-[15px] py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] sm:min-w-[400px] min-w-[360px] placeholder:text-[#8F8F8F] placeholder:text-[14px] focus:outline-none"
-              placeholder="Additional Startup Capital ($)"
               type="text"
               name="additional_startup_capital"
               value={businessData.additional_startup_capital}
@@ -372,7 +369,6 @@ function AddBusiness() {
             </label>
             <input
               className="bg-[#3B37FF0D]/5 px-[15px] py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] sm:min-w-[400px] min-w-[360px] placeholder:text-[#8F8F8F] placeholder:text-[14px] focus:outline-none"
-              placeholder="Additional Capital Expenses ($)"
               type="text"
               name="additional_capital_expenses"
               value={businessData.additional_capital_expenses}
@@ -388,7 +384,6 @@ function AddBusiness() {
             </label>
             <input
               className="bg-[#3B37FF0D]/5 px-[15px] py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] sm:min-w-[400px] min-w-[360px] placeholder:text-[#8F8F8F] placeholder:text-[14px] focus:outline-none"
-              placeholder="Expected Annual Growth Rate (%)"
               type="text"
               name="expected_annual_growth_rate"
               value={businessData.expected_annual_growth_rate}

@@ -84,7 +84,7 @@ const Signup = () => {
                     <div className="mt-8">
                         <p className="text-[16px]">
                             <span className='text-[#8F8F8F]'>Already have an account?</span>
-                            <span onClick={() => navigate("/")} className="text-[#3B37FF] hover:underline cursor-pointer">Login</span>
+                            <span onClick={() => navigate("/login")} className="text-[#3B37FF] hover:underline cursor-pointer">Login</span>
                         </p>
                     </div>
                 </form>

@@ -26,7 +26,7 @@ const DataTable: React.FC<DataTableProps> = ({ data }) => {
     return (
         <div className="bg-white rounded-[20px] border sm:p-6 p-4 sm:mx-auto mx-[20px]">
             <div className="mb-4">
-                <h2 className="text-sm text-[#3B37FF] font-semibold">Sensitive Analysis</h2>
+                <h2 className="text-sm text-[#3B37FF] font-semibold">Sensitivy Chart</h2>
             </div>
             <table className="min-w-full text-center table-auto">
                 <thead className="text-sm font-medium text-gray-500 bg-gray-100">
