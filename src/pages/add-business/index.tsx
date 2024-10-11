@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 
 function AddBusiness() {
+  const [error, setError] = useState('');
   const [businessData, setBusinessData] = useState({
     business_name: '',
     business_listing_price: '',
@@ -12,11 +13,11 @@ function AddBusiness() {
     business_cash_flow: '',
     business_notes: '',
     loan_sba_amount: '',
-    loan_sba_amount_type: '$',
+    loan_sba_amount_type: '1',
     loan_sba_rate: '',
     loan_sba_term: '',
     loan_seller_amount: '',
-    loan_seller_amount_type: '$',
+    loan_seller_amount_type: '1',
     loan_seller_rate: '',
     loan_seller_term: '',
     loan_down_payment: '',
@@ -96,9 +97,9 @@ function AddBusiness() {
       const res = await addBusiness(clean_business_data);
       toast.success('Business added successfully!');
       navigate('/dashboard/' + res?.newBusiness._id);
-    } catch (error) {
+    } catch (error: any) {
       const errorMessage =
-        (error as any).response?.data?.message || 'Failed to add business';
+        (error as any)?.message?.split(',')[0] || 'Failed to add business';
       toast.error(errorMessage);
     }
   };
@@ -237,7 +238,7 @@ function AddBusiness() {
                     className="absolute left-[18px] top-[-10px] px-1 bg-[#f5f5ff] rounded text-[#3B37FF] text-[14px] z-10"
                   >
                     Loan Amount (
-                    {businessData.loan_sba_amount_type === '1' ? '$' : '%'})
+                    {businessData.loan_sba_amount_type == '1' ? '$' : '%'})
                   </label>
                   <input
                     className="bg-[#3B37FF0D]/5 px-[15px] py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] w-full placeholder:text-[#8F8F8F] placeholder:text:[14px] focus:outline-none"

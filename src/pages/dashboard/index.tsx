@@ -406,8 +406,8 @@ function Dashboard() {
                   className="bg-[#3B37FF0D]/5 px-[15px] py-[17px] border border-[#3B37FF2B]/15 rounded-[10px] w-full placeholder:text-[#8F8F8F] placeholder:text-[14px] focus:outline-none"
                   placeholder="SDE / Cash flow ($)"
                   type="text"
-                  name="business_gross_revenue"
-                  value={formData.business_gross_revenue}
+                  name="business_cash_flow"
+                  value={formData.business_cash_flow}
                   onChange={handleInputChange}
                 />
               </div>
@@ -586,18 +586,17 @@ function Dashboard() {
           </div>
         </CustomModal>
         <div className="flex gap-2 items-center">
-          {user_id && token && (
-            <div>
-              <button
-                onClick={() => {
-                  navigate('/compare-results');
-                }}
-                className="text-[#3B37FF] font-medium px-2 py-[10px] rounded-[10px] border-[#3B37FF] border text-sm"
-              >
-                Dashboard
-              </button>
-            </div>
-          )}
+          <div>
+            <button
+              onClick={() => {
+                if (user_id && token) navigate('/compare-results');
+                else navigate('/login');
+              }}
+              className="text-[#3B37FF] font-medium px-2 py-[10px] rounded-[10px] border-[#3B37FF] border text-sm"
+            >
+              Dashboard
+            </button>
+          </div>
 
           <div className="space-x-2 flex items-center">
             <button
@@ -624,37 +623,37 @@ function Dashboard() {
           {
             title: 'ROI',
             subtitle: 'Return on Investment',
-            value: `$ ${business?.business?.metrics?.roi}`,
+            value: `$ ${business?.business?.metrics?.roi || 0}`,
           },
           {
             title: 'DSCR',
             subtitle: 'Debt Service Coverage Ratio',
-            value: business?.business?.metrics?.dscr,
+            value: business?.business?.metrics?.dscr || 0,
           },
           {
             title: 'Net Profit Margins',
             subtitle: 'Post Purchase',
-            value: `${business?.business?.metrics?.net_profit_margin} %`,
+            value: `${business?.business?.metrics?.net_profit_margin || 0} %`,
           },
           {
             title: 'Break-even Point',
             subtitle: '',
-            value: `${business?.business?.metrics?.break_even_revenue}x`,
+            value: `${business?.business?.metrics?.break_even_revenue || 0}x`,
           },
           {
             title: 'Payback Period',
             subtitle: '',
-            value: `${business?.business?.metrics?.payback_period} years`,
+            value: `${business?.business?.metrics?.payback_period || 0} years`,
           },
           {
             title: 'Equity Multiple',
             subtitle: '',
-            value: `${business?.business?.metrics?.equity_multiple?.toString().slice(0, 4)}x`,
+            value: `${business?.business?.metrics?.equity_multiple?.toString().slice(0, 4) || 0}x`,
           },
           {
             title: 'SDE Multiple',
             subtitle: '',
-            value: `${business?.business?.metrics?.sde_multiple}x`,
+            value: `${business?.business?.metrics?.sde_multiple || 0}x`,
           },
         ].map((metric, idx) => (
           <div
