@@ -49,7 +49,6 @@ function ResetPassword() {
             </label>
             <input
               type="email"
-              placeholder="Enter your email"
               {...register('email', { required: true })}
               className="w-full px-5 py-3 border border-[#8F8F8F40]/25 rounded-lg focus:outline-none bg-[#8F8F8F0D]/5"
             />
