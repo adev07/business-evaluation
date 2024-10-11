@@ -106,7 +106,6 @@ function Dashboard() {
   }
   const sensitivityAnalysis = business?.business?.metrics?.sensitivityAnalysis;
 
-
   const chartData =
     business?.business?.metrics.advancedProjections?.map(
       ({ year, expenses }: { year: number; expenses: number }) => ({
@@ -156,18 +155,28 @@ function Dashboard() {
   };
 
   const generatePDF = (data: any) => {
-    const doc = new jsPDF();
-    doc.setFontSize(20);
+    let doc: any = new jsPDF();
+    doc.setFontSize(14);
     doc.text('Business Report', 10, 10);
-
+    const pageHeight = doc.internal.pageSize.height;
     let y = 20;
+    let page = 1;
+    doc.page = page;
     Object.entries(data[0]).forEach(([key, value]) => {
+      if (y > pageHeight - 20) {
+        doc.addPage();
+        y = 20;
+      }
       doc.setFontSize(12);
       doc.text(`${key}: ${value}`, 10, y);
       y += 10;
     });
 
-    doc.save('business_report.pdf');
+    if (page > 1) {
+      doc.save(`business_report_${page}.pdf`);
+    } else {
+      doc.save('business_report.pdf');
+    }
   };
 
   const downloadExcel = (data: any, filename = 'business_report.xlsx') => {
@@ -217,22 +226,37 @@ function Dashboard() {
         } = {},
       } = business.business.metrics;
 
-      const formattedAdvancedProjections = advancedProjections
-        .map(
-          ({
-            year,
-            revenue,
-            expenses,
-            cash_flow,
-          }: {
-            year: number;
-            revenue: number;
-            expenses: number;
-            cash_flow: number;
-          }) =>
-            `Year ${year}:\n  Revenue: $${revenue.toFixed(2)}\n  Expenses: $${expenses.toFixed(2)}\n  Cash Flow: $${cash_flow.toFixed(2)}`
-        )
-        .join('\n\n');
+      // const formattedAdvancedProjections = advancedProjections
+      //   .map(
+      //     ({
+      //       year,
+      //       revenue,
+      //       expenses,
+      //       cash_flow,
+      //     }: {
+      //       year: number;
+      //       revenue: number;
+      //       expenses: number;
+      //       cash_flow: number;
+      //     }) =>
+      //       `Year ${year}:\n  Revenue: $${revenue.toFixed(2)}\n  Expenses: $${expenses.toFixed(2)}\n  Cash Flow: $${cash_flow.toFixed(2)}`
+      //   )
+      //   .join('\n\n');
+
+      const formatCashFlowProjection: any = {};
+
+      for (const projection of advancedProjections) {
+        formatCashFlowProjection['cash_flow_year_' + projection.year] =
+          projection.cash_flow;
+      }
+      for (const projection of advancedProjections) {
+        formatCashFlowProjection['revenue_year_' + projection.year] =
+          projection.revenue;
+      }
+      for (const projection of advancedProjections) {
+        formatCashFlowProjection['expenses_year_' + projection.year] =
+          projection.expenses;
+      }
 
       const reportData = [
         {
@@ -250,25 +274,19 @@ function Dashboard() {
           yearly_debt_payments,
           sellerLoadPayment,
           cash_flow_projection: cash_flow_projection.join(', '),
-          advanced_projections: formattedAdvancedProjections,
-          sensitivity_analysis_pessimistic: {
-            growth_rate: growth_rate_pessimistic,
-            npv_low_discount: npv_low_pessimistic,
-            npv_medium_discount: npv_medium_pessimistic,
-            npv_high_discount: npv_high_pessimistic,
-          },
-          sensitivity_analysis_base: {
-            growth_rate: growth_rate_base,
-            npv_low_discount: npv_low_base,
-            npv_medium_discount: npv_medium_base,
-            npv_high_discount: npv_high_base,
-          },
-          sensitivity_analysis_optimistic: {
-            growth_rate: growth_rate_optimistic,
-            npv_low_discount: npv_low_optimistic,
-            npv_medium_discount: npv_medium_optimistic,
-            npv_high_discount: npv_high_optimistic,
-          },
+          growth_rate_pessimistic: growth_rate_pessimistic,
+          npv_low_pessimistic: npv_low_pessimistic,
+          npv_medium_pessimistic: npv_medium_pessimistic,
+          npv_high_pessimistic: npv_high_pessimistic,
+          growth_rate_base: growth_rate_base,
+          npv_low_base: npv_low_base,
+          pv_medium_base: npv_medium_base,
+          npv_high_base: npv_high_base,
+          growth_rate_optimistic: growth_rate_optimistic,
+          npv_low_optimistic: npv_low_optimistic,
+          npv_medium_optimistic: npv_medium_optimistic,
+          npv_high_optimistic: npv_high_optimistic,
+          ...formatCashFlowProjection,
         },
       ];
 
