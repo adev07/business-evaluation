@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import user from '../../assets/image.svg';
-import { FaTrashAlt, FaArrowUp, FaArrowDown } from 'react-icons/fa';
+import { FaTrashAlt, FaArrowUp, FaArrowDown, FaInfoCircle } from 'react-icons/fa';
 import useBusinessStore from '../../store/buisnessSrore';
 import { useNavigate } from 'react-router-dom';
 
@@ -66,6 +66,27 @@ function Index() {
     return sorted;
   };
 
+  const Tooltip = ({ text, children }: { text: string; children: React.ReactNode }) => {
+    const [visible, setVisible] = useState(false);
+
+    return (
+      <div className="relative inline-block">
+        <div
+          onMouseEnter={() => setVisible(true)}
+          onMouseLeave={() => setVisible(false)}
+        >
+          {children}
+        </div>
+        {visible && (
+          <div className="absolute left-1/2 transform -translate-x-1/2 mt-1 w-auto p-2 text-sm text-black bg-white rounded shadow-lg z-10">
+            {text}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+
   return (
     <div className="min-h-screen bg-[#FAFAFA] pb-6 px-4 sm:px-6 lg:px-12">
       <div className="pt-6 flex justify-between items-center">
@@ -114,12 +135,17 @@ function Index() {
           <div className="flex flex-col gap-4 text-[#2B3674] font-medium mt-6">
             {sortedBusiness()?.map((company: any, index: number) => (
               <div key={index} className="flex items-center justify-between">
-                <h1
-                  className="hover:text-blue-600 underline cursor-pointer"
-                  onClick={() => navigate(`/dashboard/${company?.data?._id}`)}
-                >
-                  {company?.data?.business_name}
-                </h1>
+                <div className="flex items-center">
+                  <h1
+                    className="hover:text-blue-600 underline cursor-pointer"
+                    onClick={() => navigate(`/dashboard/${company?.data?._id}`)}
+                  >
+                    {company?.data?.business_name}
+                  </h1>
+                  <Tooltip text={company?.data?.business_notes}>
+                    <FaInfoCircle className="ml-2 cursor-pointer text-[#3B37FF] hover:text-[#3B37FF]/60" />
+                  </Tooltip>
+                </div>
                 <div className="flex items-center gap-2">
                   <FaTrashAlt
                     className="cursor-pointer text-[#3B37FF] hover:text-[#3B37FF]/60"
