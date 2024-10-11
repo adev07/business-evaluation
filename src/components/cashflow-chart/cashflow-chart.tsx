@@ -1,4 +1,3 @@
-// import { TrendingUp } from "lucide-react";
 import { Area, AreaChart, CartesianGrid, XAxis, Tooltip, ResponsiveContainer, Legend, YAxis } from "recharts";
 
 interface CashflowData {
@@ -31,7 +30,9 @@ export function CashflowChart({ data }: CashflowChartProps) {
                         <XAxis dataKey="year" />
                         <YAxis />
                         <CartesianGrid strokeDasharray="3 3" />
-                        <Tooltip />
+                        <Tooltip
+                            formatter={(value: number) => `$${value.toLocaleString()}`}
+                        />
                         <Legend />
                         <Area
                             type="monotone"

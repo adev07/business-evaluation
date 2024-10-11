@@ -59,7 +59,6 @@ const Login = () => {
               </label>
               <input
                 type="email"
-                placeholder="Enter your email"
                 {...register('email', { required: true })}
                 className="w-full px-4 sm:px-5 py-3 border border-[#8F8F8F40]/25 rounded-[8px] sm:rounded-[10px] focus:outline-none bg-[#8F8F8F0D]/5"
               />
@@ -73,7 +72,6 @@ const Login = () => {
               </label>
               <input
                 type={showPassword ? 'text' : 'password'}
-                placeholder="Enter your password"
                 {...register('password', { required: true })}
                 className="w-full px-4 sm:px-5 py-3 border border-[#8F8F8F40]/25 rounded-[8px] sm:rounded-[10px] focus:outline-none bg-[#8F8F8F0D]/5"
               />

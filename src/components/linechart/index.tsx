@@ -26,7 +26,7 @@ export function LineChartCard({ chartData }: { chartData: ChartData[] }) {
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="year" />
                         <YAxis />
-                        <Tooltip />
+                        <Tooltip formatter={(value: number) => `$${value.toLocaleString()}`} />
                         <Legend />
                         <Line
                             type="monotone"

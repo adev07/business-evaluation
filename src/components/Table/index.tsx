@@ -1,4 +1,3 @@
-
 interface DataTableProps {
     data: {
         Pessimistic: ScenarioData;
@@ -26,7 +25,7 @@ const DataTable: React.FC<DataTableProps> = ({ data }) => {
     return (
         <div className="bg-white rounded-[20px] border sm:p-6 p-4 sm:mx-auto mx-[20px]">
             <div className="mb-4">
-                <h2 className="text-sm text-[#3B37FF] font-semibold">Sensitivy Chart</h2>
+                <h2 className="text-sm text-[#3B37FF] font-semibold">Sensitivity Chart</h2>
             </div>
             <table className="min-w-full text-center table-auto">
                 <thead className="text-sm font-medium text-gray-500 bg-gray-100">
@@ -54,9 +53,9 @@ const DataTable: React.FC<DataTableProps> = ({ data }) => {
                         >
                             <td className="py-3">{item.scenario}</td>
                             <td className="py-3">{item.growth_rate} %</td>
-                            <td className="py-3">${item.npv_low_discount}</td>
-                            <td className="py-3">${item.npv_medium_discount}</td>
-                            <td className="py-3">${item.npv_high_discount}</td>
+                            <td className="py-3">${item.npv_low_discount.toLocaleString()}</td>
+                            <td className="py-3">${item.npv_medium_discount.toLocaleString()}</td>
+                            <td className="py-3">${item.npv_high_discount.toLocaleString()}</td>
                         </tr>
                     ))}
                 </tbody>

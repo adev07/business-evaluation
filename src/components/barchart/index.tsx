@@ -17,7 +17,7 @@ export function BarChartComponent({ chartData }: BarChartComponentProps) {
                         <CartesianGrid vertical={false} />
                         <XAxis dataKey="year" tickLine={false} tickMargin={10} axisLine={false} />
                         <YAxis />
-                        <Tooltip />
+                        <Tooltip formatter={(value: number) => `$${value.toLocaleString()}`} />
                         <Legend />
                         <Bar dataKey="expenses" stackId="a" fill="#2463eb" radius={[0, 0, 4, 4]} />
                     </BarChart>

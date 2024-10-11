@@ -104,8 +104,8 @@ function Dashboard() {
   if (isLoading) {
     return <div>Loading...</div>;
   }
-
   const sensitivityAnalysis = business?.business?.metrics?.sensitivityAnalysis;
+
 
   const chartData =
     business?.business?.metrics.advancedProjections?.map(
@@ -128,7 +128,7 @@ function Dashboard() {
     business?.business?.metrics.advancedProjections?.map(
       ({ year, revenue }: { year: number; revenue: number }) => ({
         year,
-        revenue,
+        revenue, // Keep revenue as a number
       })
     ) || [];
 
