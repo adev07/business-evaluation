@@ -114,7 +114,6 @@ const Login = () => {
               </p>
             </div>
           </form>
-          {/* form ends here */}
         </div>
       </div>
       <div className="py-4">
