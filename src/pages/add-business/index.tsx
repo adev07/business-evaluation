@@ -5,7 +5,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 
 function AddBusiness() {
-  const [error, setError] = useState('');
   const [businessData, setBusinessData] = useState({
     business_name: '',
     business_listing_price: '',
